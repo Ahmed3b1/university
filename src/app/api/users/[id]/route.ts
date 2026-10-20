@@ -46,7 +46,7 @@ export async function GET(
                     })
                 } catch (err) {
                     return NextResponse.json(
-                    { success: false, message: "حدث خطأ" },
+                    { success: false, message: "حدث خطأ أثناء جلب بيانات المستخدم" },
                     { status: 500 }
                     )
                 }
