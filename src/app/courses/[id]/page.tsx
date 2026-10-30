@@ -80,9 +80,7 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
         <div className="bg-red-50 text-red-600 p-6 rounded-lg max-w-lg mx-auto border border-red-100">
           <h2 className="text-2xl font-bold mb-2">خطأ</h2>
           <p>{error || 'لم يتم العثور على المادة'}</p>
-          <Button className="mt-4" variant="outline" asChild>
-            <Link href="/courses">العودة للمواد</Link>
-          </Button>
+          <Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/courses" />}>العودة للمواد</Button>
         </div>
       </div>
     )
@@ -192,15 +190,7 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                                             </p>
                                             </div>
                                         </div>
-                                        <Button variant="outline" size="sm" asChild>
-                                            <a
-                                            href={material.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            >
-                                            عرض / تحميل
-                                            </a>
-                                        </Button>
+                                        <Button variant="outline" size="sm" nativeButton={false} render={<a href={material.url} target="_blank" rel="noopener noreferrer" />}>عرض / تحميل</Button>
                                     </div>
                                 ))}
                             </div>

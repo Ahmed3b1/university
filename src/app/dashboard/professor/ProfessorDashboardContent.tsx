@@ -100,6 +100,31 @@ export default function ProfessorDashboardContent() {
     setIsAddMaterialOpen(true)
   }
 
+  const handleAddMaterial = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedCourseId) return
+    try {
+      const res = await fetch(`/api/courses/${selectedCourseId}/materials`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(materialData),
+      })
+      const data = await res.json()
+
+      if (data.success) {
+        toast.success('تمت إضافة المحتوى بنجاح')
+        setIsAddMaterialOpen(false)
+        setMaterialData({ title: '', url: '', type: 'lecture' })
+        fetchCourses()
+      } else {
+        toast.error(data.message || 'حدث خطأ')
+      }
+    } catch (error) {
+      console.error('Error adding material:', error)
+      toast.error('حدث خطأ أثناء الاتصال بالخادم')
+    }
+  }
+
   const openViewStudents = async (courseId: string) => {
     setSelectedCourseId(courseId)
     setIsViewStudentsOpen(true)
@@ -124,9 +149,7 @@ export default function ProfessorDashboardContent() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">موادك الدراسية</h2>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button>إضافة مادة جديدة</Button>
-          </DialogTrigger>
+          <DialogTrigger render={<Button />}>إضافة مادة جديدة</DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-foreground" dir="rtl">
             <DialogHeader>
               <DialogTitle>إضافة مادة جديدة</DialogTitle>
@@ -166,7 +189,7 @@ export default function ProfessorDashboardContent() {
                         <Label>الفصل</Label>
                         <Select
                             value={formData.semester}
-                            onValueChange={(val: string) => setFormData({ ...formData, semester: val })}
+                            onValueChange={(val) => { if (val) setFormData({ ...formData, semester: val }) }}
                         >
                             <SelectTrigger>
                             <SelectValue />
@@ -205,7 +228,7 @@ export default function ProfessorDashboardContent() {
                     <Label>نوع المادة</Label>
                     <Select
                     value={formData.type}
-                    onValueChange={(val: string) => setFormData({ ...formData, type: val })}
+                    onValueChange={(val) => { if (val) setFormData({ ...formData, type: val }) }}
                     >
                     <SelectTrigger>
                         <SelectValue />
@@ -281,7 +304,7 @@ export default function ProfessorDashboardContent() {
               <Label>النوع</Label>
               <Select
                 value={materialData.type}
-                onValueChange={(val: string) => setMaterialData({ ...materialData, type: val })}
+                onValueChange={(val) => { if (val) setMaterialData({ ...materialData, type: val }) }}
               >
                 <SelectTrigger>
                     <SelectValue/>

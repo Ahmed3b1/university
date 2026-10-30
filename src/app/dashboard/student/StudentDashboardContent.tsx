@@ -66,9 +66,7 @@ export default function StudentDashboardContent() {
                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button className="w-full" asChild>
-                    <Link href={`/courses/${course._id}`}>الدخول للمادة</Link>
-                    </Button>
+                    <Button className="w-full" nativeButton={false} render={<Link href={`/courses/${course._id}`} />}>الدخول للمادة</Button>
                 </CardFooter>
                 </Card>
             ))}

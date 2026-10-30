@@ -15,7 +15,7 @@ interface UserSession {
 }
 
 export default function Home(){
-  const [user ,setUser] = useState(null)
+  const [user ,setUser] = useState<UserSession | null>(null)
   const [isLoading , setIsLoading] = useState(true)
 
   useEffect(()=>{

@@ -151,9 +151,7 @@ export default function CoursesList({ type }: CoursesListProps) {
                     )}
                 </CardContent>
                 <CardFooter className="pt-4 border-t border-gray-100 mt-auto">
-                    <Button className="w-full" variant="outline" asChild>
-                        <Link href={`/courses/${course.id}`}>عرض التفاصيل</Link>
-                    </Button>
+                    <Button className="w-full" variant="outline" nativeButton={false} render={<Link href={`/courses/${course.id}`} />}>عرض التفاصيل</Button>
                 </CardFooter>
 
                 </Card>

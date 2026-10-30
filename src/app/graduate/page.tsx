@@ -117,9 +117,7 @@ export default function GraduatePage() {
                 </div>
                 {(user?.role === 'admin' || user?.role === 'professor') && (
                 <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                    <DialogTrigger asChild>
-                    <Button>إضافة برنامج</Button>
-                    </DialogTrigger>
+                    <DialogTrigger render={<Button />}>إضافة برنامج</DialogTrigger>
                     <DialogContent className="max-w-lg bg-background text-foreground" dir="rtl">
                     <DialogHeader>
                         <DialogTitle>إضافة برنامج دراسات عليا</DialogTitle>
@@ -138,7 +136,7 @@ export default function GraduatePage() {
                         <Label>نوع البرنامج</Label>
                         <Select
                             value={formData.type}
-                            onValueChange={(val: string) => setFormData({ ...formData, type: val })}
+                            onValueChange={(val) => { if (val) setFormData({ ...formData, type: val }) }}
                         >
                             <SelectTrigger>
                                 <SelectValue />

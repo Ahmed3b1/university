@@ -86,9 +86,7 @@ export default function CampusLifePage() {
                     <p className="text-gray-600">اكتشف الفعاليات والنشاطات في الحرم الجامعي</p>
                     </div>
                     <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                    <DialogTrigger asChild>
-                        <Button>إضافة فعالية</Button>
-                    </DialogTrigger>
+                    <DialogTrigger render={<Button />}>إضافة فعالية</DialogTrigger>
                     <DialogContent className="max-w-md bg-background text-foreground" dir="rtl">
                             <DialogHeader>
                             <DialogTitle>إضافة فعالية جديدة</DialogTitle>

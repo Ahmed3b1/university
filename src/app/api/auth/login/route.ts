@@ -4,7 +4,6 @@ import User from '@/models/User'
 import { signToken, setAuthCookie } from '@/lib/auth'
 import { verifyPassword } from '@/lib/password'
 import { loginSchema } from '@/lib/validations'
-import { fa } from 'zod/v4/locales'
 
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
 const MAX_ATTEMPTS = 5

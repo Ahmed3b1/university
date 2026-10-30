@@ -15,9 +15,7 @@ export default function OnlineLearningPage() {
             تعلم من أي مكان وفي أي وقت مع برامجنا التعليمية عبر الإنترنت
           </p>
         </div>
-        <Button asChild size="lg" className="hidden md:flex">
-          <Link href="/dashboard/professor">لوحة الأستاذ / إدارة المواد</Link>
-        </Button>
+        <Button size="lg" className="hidden md:flex" nativeButton={false} render={<Link href="/dashboard/professor" />}>لوحة الأستاذ / إدارة المواد</Button>
       </div>
 
       <Suspense fallback={<div className="text-center">جاري التحميل...</div>}>

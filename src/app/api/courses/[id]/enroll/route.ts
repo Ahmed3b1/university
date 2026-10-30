@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ){
   try {
-    const session = getSession()
+    const session = await getSession()
     if(!session){
       return NextResponse.json(
         {success:false, message:""},
