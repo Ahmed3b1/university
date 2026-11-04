@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, DollarSign, Activity, Book, Loader2 } from "lucide-react"
 import { fetcher } from "@/lib/api"
+import { useI18n } from "@/components/language-provider"
 
 const mockChartData = [
   { name: 'يناير', students: 40 },
@@ -18,33 +19,35 @@ const mockChartData = [
 ]
 
 export function AdminDashboard() {
+  const { t } = useI18n()
+
   const { data: usersData, isLoading: loadingUsers } = useSWR<{ users: any[] }>("/api/users", fetcher)
   const { data: coursesData, isLoading: loadingCourses } = useSWR<{ courses: any[] }>("/api/courses?browse=true", fetcher)
 
   const stats = [
     {
-      title: "إجمالي المستخدمين",
+      title: t("إجمالي المستخدمين"),
       value: loadingUsers ? "..." : usersData?.users.length.toString(),
       icon: Users,
-      desc: "مستخدم مسجل",
+      desc: t("مستخدم مسجل"),
     },
     {
-      title: "المواد النشطة",
+      title: t("المواد النشطة"),
       value: loadingCourses ? "..." : coursesData?.courses.length.toString(),
       icon: Book,
-      desc: "مادة دراسية",
+      desc: t("مادة دراسية"),
     },
     {
-      title: "الطلاب",
+      title: t("الطلاب"),
       value: loadingUsers ? "..." : usersData?.users.filter(u => u.role === 'student').length.toString(),
       icon: GraduationCapIcon,
-      desc: "طالب وطالبة",
+      desc: t("طالب وطالبة"),
     },
     {
-      title: "الأساتذة",
+      title: t("الأساتذة"),
       value: loadingUsers ? "..." : usersData?.users.filter(u => u.role === 'professor').length.toString(),
       icon: Activity,
-      desc: "عضو هيئة تدريس",
+      desc: t("عضو هيئة تدريس"),
     },
   ]
 
@@ -76,13 +79,13 @@ export function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 glass-card">
           <CardHeader>
-            <CardTitle>نظرة عامة على التسجيل</CardTitle>
-            <CardDescription>بيانات تجريبية للنمو</CardDescription>
+            <CardTitle>{t("نظرة عامة على التسجيل")}</CardTitle>
+            <CardDescription>{t("بيانات تجريبية للنمو")}</CardDescription>
           </CardHeader>
 
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockChartData}>
+              <BarChart data={mockChartData.map((d) => ({ ...d, name: t(d.name) }))}>
                 <CartesianGrid
                   strokeDasharray="3 3"
                   className="stroke-muted"
@@ -123,8 +126,8 @@ export function AdminDashboard() {
 
         <Card className="col-span-3 glass-card">
           <CardHeader>
-            <CardTitle>آخر المستخدمين</CardTitle>
-            <CardDescription>أحدث المسجلين في النظام</CardDescription>
+            <CardTitle>{t("آخر المستخدمين")}</CardTitle>
+            <CardDescription>{t("أحدث المسجلين في النظام")}</CardDescription>
           </CardHeader>
 
           <CardContent>

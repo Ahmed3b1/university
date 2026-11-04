@@ -3,8 +3,11 @@ import dbConnect from '@/lib/mongodb'
 import Course from '@/models/Course'
 import { getSession } from '@/lib/auth'
 import { createCourseSchema } from '@/lib/validations'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
+  const t = await getT()
+
   try {
     await dbConnect()
     const courses = await Course.find({ type: "online" })
@@ -28,26 +31,28 @@ export async function GET() {
   } catch (err) {
     console.error("Get online courses error:", err)
     return NextResponse.json(
-      { success: false, message: "حدث خطأ أثناء جلب الدورات" },
+      { success: false, message: t("حدث خطأ أثناء جلب الدورات") },
       { status: 500 }
     )
   }
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
     if (!session) {
       return NextResponse.json(
-        { success: false, message: "غير مصرح" },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
 
     if (session.role === "student") {
       return NextResponse.json(
-        { success: false, message: "غير مصرح" },
+        { success: false, message: t("غير مصرح") },
         { status: 403 }
       )
     }
@@ -61,10 +66,10 @@ export async function POST(request: Request) {
     const validationResult = createCourseSchema.safeParse(body)
 
     if (!validationResult.success) {
-      const errors = validationResult.error.issues.map((e) => e.message)
+      const errors = validationResult.error.issues.map((e) => t(e.message))
 
       return NextResponse.json(
-        { success: false, message: "بيانات الدورة غير صحيحة" },
+        { success: false, message: t("بيانات الدورة غير صحيحة") },
         { status: 400 }
       )
     }
@@ -75,7 +80,7 @@ export async function POST(request: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: "رمز الدورة موجود بالفعل" },
+        { success: false, message: t("رمز الدورة موجود بالفعل") },
         { status: 400 }
       )
     }
@@ -91,7 +96,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "تم إنشاء الدورة بنجاح",
+      message: t("تم إنشاء الدورة بنجاح"),
       course: {
         id: course._id.toString(),
         title: course.title,
@@ -100,7 +105,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Create online course error:", error)
     return NextResponse.json(
-      { success: false, message: "حدث خطأ أثناء إنشاء الدورة" } ,
+      { success: false, message: t("حدث خطأ أثناء إنشاء الدورة") } ,
       {status: 500 }
     )
   }

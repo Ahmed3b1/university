@@ -3,8 +3,11 @@ import dbConnect from "@/lib/mongodb"
 import Course from "@/models/Course"
 import { getSession } from "@/lib/auth"
 import { createCourseSchema } from "@/lib/validations"
+import { getT } from "@/lib/i18n/server"
 
 export async function GET(request: Request) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
@@ -62,7 +65,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "حدث خطأ أثناء استرجاع الدورات"
+        message: t("حدث خطأ أثناء استرجاع الدورات")
       },
       { status: 500 }
     );
@@ -70,19 +73,21 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request:Request){
+  const t = await getT()
+
   try{
     const session = await getSession()
 
     if(!session){
       return NextResponse.json(
-        {success: false, message:"غير مسجل"},
+        {success: false, message:t("غير مسجل")},
         {status:401}
       )
     }
 
     if(session.role === "student"){
       return NextResponse.json(
-        {success:false, message:"غير مصرح لك"},
+        {success:false, message:t("غير مصرح لك")},
         {status:403}
       )
     }
@@ -93,7 +98,7 @@ export async function POST(request:Request){
 
     const validationResult = createCourseSchema.safeParse(body)
     if(!validationResult.success){
-      const errors = validationResult.error.issues.map((e) => e.message)
+      const errors = validationResult.error.issues.map((e) => t(e.message))
       return NextResponse.json(
         {success: false, message: errors[0]},
         {status: 400}
@@ -108,7 +113,7 @@ export async function POST(request:Request){
 
     if(existingCourse){
       return NextResponse.json(
-        {success: false, message: "رمز المادة موجود بالفعل"},
+        {success: false, message: t("رمز المادة موجود بالفعل")},
         {status: 400}
       )
     }
@@ -134,7 +139,7 @@ export async function POST(request:Request){
 
     return NextResponse.json({
       success: true,
-      message: "تم إنشاء المادة بنجاح",
+      message: t("تم إنشاء المادة بنجاح"),
       course: {
         id: course._id.toString(),
         title: course.title,
@@ -144,7 +149,7 @@ export async function POST(request:Request){
   } catch (error) {
     console.error('Create course error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ' },
+      { success: false, message: t("حدث خطأ") },
       { status: 500 }
     )
   }

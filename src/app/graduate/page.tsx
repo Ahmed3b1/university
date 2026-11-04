@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useI18n } from "@/components/language-provider"
+import { getDateLocale } from "@/lib/i18n/config"
 
 interface GraduateProgram {
   _id: string
@@ -28,6 +30,8 @@ interface UserSession {
 }
 
 export default function GraduatePage() {
+  const { t, locale } = useI18n()
+
   const [programs, setPrograms] = useState<GraduateProgram[]>([])
   const [loading, setLoading] = useState(true)
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -86,7 +90,7 @@ export default function GraduatePage() {
       const data = await res.json()
 
       if (data.success) {
-        toast.success(data.message || 'تم إضافة البرنامج بنجاح')
+        toast.success(data.message || t("تم إضافة البرنامج بنجاح"))
         setIsAddOpen(false)
         fetchPrograms()
         setFormData({
@@ -99,11 +103,11 @@ export default function GraduatePage() {
           image: '',
         })
       } else {
-        toast.error(data.message || 'حدث خطأ')
+        toast.error(data.message || t("حدث خطأ"))
       }
     } catch (error) {
       console.error('Error adding program:', error)
-      toast.error('حدث خطأ أثناء الاتصال بالخادم')
+      toast.error(t("حدث خطأ أثناء الاتصال بالخادم"))
     }
 
     }
@@ -112,19 +116,19 @@ export default function GraduatePage() {
         <div className="container mx-auto py-10 px-4" dir="rtl">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                <h1 className="text-4xl font-bold text-primary mb-2">الدراسات العليا</h1>
-                <p className="text-gray-600">استعراض الماستر والدكتوراه المتاحة</p>
+                <h1 className="text-4xl font-bold text-primary mb-2">{t("الدراسات العليا")}</h1>
+                <p className="text-muted-foreground">{t("استعراض الماستر والدكتوراه المتاحة")}</p>
                 </div>
                 {(user?.role === 'admin' || user?.role === 'professor') && (
                 <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                    <DialogTrigger render={<Button />}>إضافة برنامج</DialogTrigger>
+                    <DialogTrigger render={<Button />}>{t("إضافة برنامج")}</DialogTrigger>
                     <DialogContent className="max-w-lg bg-background text-foreground" dir="rtl">
                     <DialogHeader>
-                        <DialogTitle>إضافة برنامج دراسات عليا</DialogTitle>
+                        <DialogTitle>{t("إضافة برنامج دراسات عليا")}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleAddProgram} className="space-y-4 mt-4">
                         <div className="space-y-2">
-                        <Label>اسم البرنامج</Label>
+                        <Label>{t("اسم البرنامج")}</Label>
                         <Input
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -133,7 +137,7 @@ export default function GraduatePage() {
                         />
                         </div>
                         <div className="space-y-2">
-                        <Label>نوع البرنامج</Label>
+                        <Label>{t("نوع البرنامج")}</Label>
                         <Select
                             value={formData.type}
                             onValueChange={(val) => { if (val) setFormData({ ...formData, type: val }) }}
@@ -142,13 +146,13 @@ export default function GraduatePage() {
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                            <SelectItem value="master">ماجستير</SelectItem>
-                            <SelectItem value="phd">دكتوراه</SelectItem>
+                            <SelectItem value="master">{t("ماجستير")}</SelectItem>
+                            <SelectItem value="phd">{t("دكتوراه")}</SelectItem>
                             </SelectContent>
                         </Select>
                         </div>
                         <div className="space-y-2">
-                        <Label>الوصف</Label>
+                        <Label>{t("الوصف")}</Label>
                         <Textarea
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -157,26 +161,26 @@ export default function GraduatePage() {
                         />
                         </div>
                         <div className="space-y-2">
-                        <Label>متطلبات القبول</Label>
+                        <Label>{t("متطلبات القبول")}</Label>
                         <Textarea
                             value={formData.requirements}
                             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                             required
-                            placeholder="اذكر المتطلبات الأكاديمية..."
+                            placeholder={t("اذكر المتطلبات الأكاديمية...")}
                         />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label>المدة (بالسنوات)</Label>
+                            <Label>{t("المدة (بالسنوات)")}</Label>
                             <Input
                             value={formData.duration}
                             onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                             required
-                            placeholder="سنتين"
+                            placeholder={t("سنتين")}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>تاريخ البدء</Label>
+                            <Label>{t("تاريخ البدء")}</Label>
                             <Input
                             type="date"
                             value={formData.startDate}
@@ -186,14 +190,14 @@ export default function GraduatePage() {
                         </div>
                         </div>
                         <div className="space-y-2">
-                        <Label>رابط الصورة (اختياري)</Label>
+                        <Label>{t("رابط الصورة (اختياري)")}</Label>
                         <Input
                             value={formData.image}
                             onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                             placeholder="https://..."
                         />
                         </div>
-                        <Button type="submit" className="w-full">إضافة</Button>
+                        <Button type="submit" className="w-full">{t("إضافة")}</Button>
                     </form>
                     </DialogContent>
                 </Dialog>
@@ -206,8 +210,8 @@ export default function GraduatePage() {
                     <Skeleton className="h-60 w-full rounded-xl" />
                 </div>
             ) : programs.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-lg border border-dashed text-gray-500">
-                لا يوجد برامج متاحة حالياً
+                <div className="text-center py-20 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">
+                {t("لا يوجد برامج متاحة حالياً")}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -217,32 +221,32 @@ export default function GraduatePage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded mb-2 inline-block">
-                                        {program.type === 'master' ? 'ماجستير' : 'دكتوراه'}
+                                        {program.type === 'master' ? t("ماجستير") : t("دكتوراه")}
                                         </span>
                                         <CardTitle className="text-2xl">{program.title}</CardTitle>
                                     </div>
-                                    <span className="text-sm font-medium bg-gray-100 px-3 py-1 rounded-full">{program.duration}</span>
+                                    <span className="text-sm font-medium bg-muted px-3 py-1 rounded-full">{program.duration}</span>
                                 </div>
                                 <CardDescription className="line-clamp-2 mt-2">{program.description}</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4 text-sm text-gray-700">
+                            <CardContent className="space-y-4 text-sm text-foreground/80">
                                 <div>
-                                    <p className="font-semibold mb-1">متطلبات القبول:</p>
+                                    <p className="font-semibold mb-1">{t("متطلبات القبول:")}</p>
                                     <p className="line-clamp-3">{program.requirements}</p>
                                 </div>
-                                <div className="flex items-center gap-2 text-gray-500">
-                                    <span>تاريخ البدء:</span>
-                                    <span>{new Date(program.startDate).toLocaleDateString('ar-SA')}</span>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <span>{t("تاريخ البدء:")}</span>
+                                    <span>{new Date(program.startDate).toLocaleDateString(getDateLocale(locale))}</span>
                                 </div>
                                 {program.coordinator && (
-                                <div className="flex items-center gap-2 text-gray-500">
-                                    <span>المنسق:</span>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <span>{t("المنسق:")}</span>
                                     <span>{program.coordinator.name}</span>
                                 </div>
                                 )}
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full"> تفديم طلب</Button>
+                                <Button className="w-full"> {t("تقديم طلب")}</Button>
                             </CardFooter>
                         </Card>
                     ))}

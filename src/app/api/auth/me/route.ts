@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
     if (!session) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح' },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
@@ -24,7 +27,7 @@ export async function GET() {
   } catch (error) {
     console.error('Get session error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ' },
+      { success: false, message: t("حدث خطأ") },
       { status: 500 }
     )
   }

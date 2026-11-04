@@ -5,6 +5,7 @@ import { Book, Users, MoreVertical, GraduationCap, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { useI18n } from "@/components/language-provider"
 
 
 interface Course {
@@ -31,6 +32,8 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course, role, isEnrolled, onEnroll }: CourseCardProps) {
+  const { t } = useI18n()
+
     return (
         <Card className="glass-card flex flex-col h-full hover:border-primary/50 transition-all duration-300 hover:shadow-lg group">
             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
@@ -42,7 +45,7 @@ export function CourseCard({ course, role, isEnrolled, onEnroll }: CourseCardPro
                         <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded text-foreground">
                             {course.code}
                         </span>
-                        <span>{course.semester} {course.year}</span>
+                        <span>{t(course.semester)} {course.year}</span>
                     </CardDescription>
                 </div>
                 {role === "professor" && (
@@ -55,25 +58,25 @@ export function CourseCard({ course, role, isEnrolled, onEnroll }: CourseCardPro
 
             <CardContent className="flex-1 space-y-4">
                 <p className="text-sm text-muted-foreground line-clamp-2 min-h-10">
-                    {course.description || "لا يوجد وصف للمادة حاليا."}
+                    {course.description || t("لا يوجد وصف للمادة حاليا.")}
                 </p>
 
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                         <GraduationCap className="h-3.5 w-3.5" />
-                        <span>{course.professor?.name || "غير محدد"}</span>
+                        <span>{course.professor?.name || t("غير محدد")}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
                         <Clock className="h-3.5 w-3.5" />
-                        <span>{course.credits} ساعات</span>
+                        <span>{course.credits} {t("ساعات")}</span>
                     </div>
                 </div>
 
                  {role === "student" && isEnrolled && (
                     <div className="space-y-2 pt-2">
                         <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">التقدم</span>
+                            <span className="text-muted-foreground">{t("التقدم")}</span>
                             <span className="font-medium">{course.progress || 0}</span>
                         </div>
                         <Progress value={course.progress || 0} className="h-1.5" />
@@ -83,7 +86,7 @@ export function CourseCard({ course, role, isEnrolled, onEnroll }: CourseCardPro
                 {role === "professor" && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
                         <Users className="h-4 w-4" />
-                        <span>{course.studentsCount || 0} طالب مسجل</span>
+                        <span>{course.studentsCount || 0} {t("طالب مسجل")}</span>
                     </div>
                 )}
 
@@ -94,21 +97,21 @@ export function CourseCard({ course, role, isEnrolled, onEnroll }: CourseCardPro
                     isEnrolled ? (
                         <Link href={`/courses/${course.id}`} className="w-full">
                             <Button className="w-full" variant="secondary">
-                                متابعة الدراسة
+                                {t("متابعة الدراسة")}
                             </Button>
                         </Link>
                     ) : (
                         <Button
-                            className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md hover:shadow-xl transition-all"
+                            className="w-full"
                             onClick={() => onEnroll?.(course.id)}
                         >
-                            تسجيل في المادة
+                            {t("تسجيل في المادة")}
                         </Button>
                     )
                 ) : (
                     <Link href={`/dashboard/courses/${course.id}`} className="w-full">
                         <Button className="w-full" variant="outline">
-                            {role === "admin" ? "إدارة المادة" : "عرض التفاصيل"} 
+                            {role === "admin" ? t("إدارة المادة") : t("عرض التفاصيل")} 
                         </Button>
                     </Link>
                 )}

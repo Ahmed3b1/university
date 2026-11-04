@@ -5,6 +5,8 @@ import { Bell, Check, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/components/language-provider"
+import { getDateLocale } from "@/lib/i18n/config"
 
 interface Notification {
     _id: string
@@ -15,6 +17,8 @@ interface Notification {
 }
 
 export function NotificationList() {
+  const { t, locale } = useI18n()
+
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -41,10 +45,10 @@ export function NotificationList() {
             const res = await fetch(`/api/notifications/${id}`, { method: "PUT" })
             if (res.ok) {
                 setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n))
-                toast.success("تم تحديث الحالة")
+                toast.success(t("تم تحديث الحالة"))
             }
         } catch (error) {
-            toast.error("حدث خطأ")
+            toast.error(t("حدث خطأ"))
         }
     }
 
@@ -53,20 +57,20 @@ export function NotificationList() {
             const res = await fetch(`/api/notifications/${id}`, { method: "DELETE" })
             if (res.ok) {
                 setNotifications(prev => prev.filter(n => n._id !== id))
-                toast.success("تم حذف الإشعار")
+                toast.success(t("تم حذف الإشعار"))
             }
         } catch (error) {
-            toast.error("حدث خطأ")
+            toast.error(t("حدث خطأ"))
         }
     }
 
-    if (loading) return <div className="text-center py-8">جاري التحميل...</div>
+    if (loading) return <div className="text-center py-8">{t("جاري التحميل...")}</div>
 
     if (notifications.length === 0) {
         return (
             <div className="text-center py-12 text-muted-foreground">
                 <Bell className="mx-auto h-12 w-12 opacity-20 mb-4" />
-                <p>لا توجد إشعارات حاليا</p>
+                <p>{t("لا توجد إشعارات حاليا")}</p>
             </div>
         )
     }
@@ -84,7 +88,7 @@ export function NotificationList() {
                     <div className="flex gap-4">
                         <div className={cn(
                             "mt-1 h-2 w-2 rounded-full shrink-0",
-                            notification.isRead ? "bg-gray-300" : "bg-primary"
+                            notification.isRead ? "bg-muted-foreground/40" : "bg-primary"
                         )} />
 
                         <div>
@@ -92,7 +96,7 @@ export function NotificationList() {
                                 {notification.message}
                             </p>
                             <span className="text-xs text-muted-foreground mt-1 block">
-                                {new Date(notification.createdAt).toLocaleDateString("ar-SA")}
+                                {new Date(notification.createdAt).toLocaleDateString(getDateLocale(locale))}
                             </span>
                         </div>
                     </div>
@@ -103,7 +107,7 @@ export function NotificationList() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => handleMarkAsRead(notification._id)}
-                                title="تحديد كمقروء"
+                                title={t("تحديد كمقروء")}
                             >
                                 <Check className="h-4 w-4 text-primary" />
                             </Button>
@@ -112,7 +116,7 @@ export function NotificationList() {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(notification._id)}
-                            title="حذف"
+                            title={t("حذف")}
                         >
                             <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>

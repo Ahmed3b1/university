@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import dbConnect from '@/lib/mongodb'
 import Notification from '@/models/Notification'
+import { getT } from "@/lib/i18n/server"
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
@@ -26,12 +29,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json(notification)
     } catch (error) {
     console.error('Notification Update Error:' , error)
-    return NextResponse.json({ error: "حدث خطأ أثناء تحديث الإشعار" }, { status: 500 })
+    return NextResponse.json({ error: t("حدث خطأ أثناء تحديث الإشعار") }, { status: 500 })
   }
 
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const t = await getT()
+
   try {
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -42,12 +47,12 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const result = await Notification.deleteOne({ _id: id, userId: session.userId })
 
     if (result.deletedCount === 0) {
-      return NextResponse.json({ error: 'الإشعار غير موجود' }, { status: 404 })
+      return NextResponse.json({ error: t("الإشعار غير موجود") }, { status: 404 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Notification delete error:', error)
-    return NextResponse.json({ error: 'حدث خطأ' }, { status: 500 })
+    return NextResponse.json({ error: t("حدث خطأ") }, { status: 500 })
   }
 }

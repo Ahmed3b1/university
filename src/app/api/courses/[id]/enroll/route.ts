@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Course from '@/models/Course'
 import { getSession } from '@/lib/auth'
+import { getT } from "@/lib/i18n/server"
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ){
+  const t = await getT()
+
   try {
     const session = await getSession()
     if(!session){
@@ -37,14 +40,14 @@ export async function POST(
 
     if (!isProfessor && !isAdmin && !isSelfEnroll) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح بتسجيل الطلاب' },
+        { success: false, message: t("غير مصرح بتسجيل الطلاب") },
         { status: 403 }
       )
     }
 
     if (course.students.includes(studentId)) {
       return NextResponse.json(
-        { success: false, message: 'الطالب مسجل بالفعل في هذه المادة' },
+        { success: false, message: t("الطالب مسجل بالفعل في هذه المادة") },
         { status: 400 }
       )
     }
@@ -54,7 +57,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: "تم تسجيل الطالب بنجاح"
+      message: t("تم تسجيل الطالب بنجاح")
     })
   } catch(err){
     console.error("Enroll student error:", err)
@@ -69,12 +72,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
     if (!session) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح' },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
@@ -87,7 +92,7 @@ export async function DELETE(
 
     if (!course) {
       return NextResponse.json(
-        { success: false, message: 'المادة غير موجودة' },
+        { success: false, message: t("المادة غير موجودة") },
         { status: 404 }
       )
     }
@@ -98,7 +103,7 @@ export async function DELETE(
 
     if (!isProfessor && !isAdmin && !isSelfUnenroll) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح بإلغاء تسجيل الطلاب' },
+        { success: false, message: t("غير مصرح بإلغاء تسجيل الطلاب") },
         { status: 403 }
       )
     }
@@ -108,7 +113,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'تم إلغاء تسجيل الطالب بنجاح'
+      message: t("تم إلغاء تسجيل الطالب بنجاح")
     })
   } catch (err) {
     console.error('Enroll student error:', err)

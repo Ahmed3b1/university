@@ -3,6 +3,7 @@ import dbConnect from "@/lib/mongodb";
 import GraduateProgram from "@/models/GraduateProgram";
 import { getSession } from "@/lib/auth";
 import { createGraduateProgramSchema } from "@/lib/validations";
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
   try {
@@ -26,6 +27,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
     const session = await getSession();
 
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: "غير مسجل",
+          message: t("غير مسجل"),
         },
         { status: 401 }
       );
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: "غير مصرح لك",
+          message: t("غير مصرح لك"),
         },
         { status: 403 }
       );
@@ -57,7 +60,7 @@ export async function POST(request: Request) {
 
     if (!validationResult.success) {
       const errors = validationResult.error.issues.map(
-        (e) => e.message
+        (e) => t(e.message)
       );
 
       return NextResponse.json(
@@ -76,7 +79,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "تم إنشاء البرنامج بنجاح",
+      message: t("تم إنشاء البرنامج بنجاح"),
       program,
     });
   } catch (err) {
@@ -84,7 +87,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "حدث خطأ أثناء إنشاء البرنامج",
+        message: t("حدث خطأ أثناء إنشاء البرنامج"),
       },
       { status: 500 }
     );

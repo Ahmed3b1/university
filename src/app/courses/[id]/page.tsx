@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useI18n } from "@/components/language-provider"
 
 interface CourseDetails {
   id: string
@@ -31,6 +32,8 @@ interface CourseDetails {
 }
 
 export default function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useI18n()
+
   const { id } = use(params)
 
   const [course, setCourse] = useState<CourseDetails | null>(null)
@@ -45,11 +48,11 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
         if (data.success) {
           setCourse(data.course)
         } else {
-          setError(data.message || 'المادة غير موجودة')
+          setError(data.message || t("المادة غير موجودة"))
         }
       } catch (err) {
         console.error('Error fetching course:', err)
-        setError('حدث خطأ أثناء تحميل تفاصيل المادة')
+        setError(t("حدث خطأ أثناء تحميل تفاصيل المادة"))
       } finally {
         setLoading(false)
       }
@@ -77,10 +80,10 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
   if (error || !course) {
     return (
       <div className="container mx-auto py-20 px-4 text-center" dir="rtl">
-        <div className="bg-red-50 text-red-600 p-6 rounded-lg max-w-lg mx-auto border border-red-100">
-          <h2 className="text-2xl font-bold mb-2">خطأ</h2>
-          <p>{error || 'لم يتم العثور على المادة'}</p>
-          <Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/courses" />}>العودة للمواد</Button>
+        <div className="bg-destructive/10 text-destructive p-6 rounded-lg max-w-lg mx-auto border border-destructive/30">
+          <h2 className="text-2xl font-bold mb-2">{t("خطأ")}</h2>
+          <p>{error || t("لم يتم العثور على المادة")}</p>
+          <Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/courses" />}>{t("العودة للمواد")}</Button>
         </div>
       </div>
     )
@@ -100,36 +103,36 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
         )}
         <div className="relative z-10 space-y-4">
           <div className="flex flex-wrap gap-2 mb-2">
-            <Badge variant="outline" className="bg-white/50 backdrop-blur">
+            <Badge variant="outline" className="bg-background/60 backdrop-blur">
               {course.code}
             </Badge>
             <Badge
               className={`${
                 course.type === 'undergraduate'
-                  ? 'bg-blue-600'
+                  ? 'bg-primary text-primary-foreground'
                   : course.type === 'graduate'
-                  ? 'bg-purple-600'
-                  : 'bg-green-600'
+                  ? 'bg-foreground text-background'
+                  : 'bg-secondary text-secondary-foreground border border-primary/40'
               }`}
             >
               {course.type === 'undergraduate'
-                ? 'بكالوريوس'
+                ? t("بكالوريوس")
                 : course.type === 'graduate'
-                ? 'دراسات عليا'
-                : 'اونلاين'}
+                ? t("دراسات عليا")
+                : t("اونلاين")}
             </Badge>
-            <Badge variant="secondary">{course.credits} ساعات معتمدة</Badge>
+            <Badge variant="secondary">{course.credits} {t("ساعات معتمدة")}</Badge>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">
             {course.title}
           </h1>
-          <div className="flex items-center gap-4 text-gray-700 text-lg font-medium">
+          <div className="flex items-center gap-4 text-foreground/80 text-lg font-medium">
             <span className="flex items-center gap-1">
               <span>{course.professor?.name}</span>
             </span>
             <span>•</span>
             <span>
-              {course.semester} {course.year}
+              {t(course.semester)} {course.year}
             </span>
           </div>
         </div>
@@ -140,9 +143,9 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
             <div className="lg:col-span-2 space-y-8">
                 <Card>
                     <CardHeader>
-                    <CardTitle>عن المادة</CardTitle>
+                    <CardTitle>{t("عن المادة")}</CardTitle>
                     </CardHeader>
-                    <CardContent className="text-gray-700 leading-relaxed text-lg">
+                    <CardContent className="text-foreground/80 leading-relaxed text-lg">
                         {course.description}
                     </CardContent>
                 </Card>
@@ -150,10 +153,10 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                 {course.learningOutcomes && course.learningOutcomes.length > 0 && (
                     <Card>
                     <CardHeader>
-                        <CardTitle>مخرجات التعلم</CardTitle>
+                        <CardTitle>{t("مخرجات التعلم")}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ul className="list-disc list-inside space-y-2 text-gray-700">
+                        <ul className="list-disc list-inside space-y-2 text-foreground/80">
                         {course.learningOutcomes.map((outcome, idx) => (
                             <li key={idx}>{outcome}</li>
                         ))}
@@ -165,15 +168,15 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                 {course.materials.length > 0 ? (
                     <Card>
                         <CardHeader>
-                            <CardTitle>المواد التعليمية</CardTitle>
-                            <CardDescription>المحاضرات والملفات المتاحة</CardDescription>
+                            <CardTitle>{t("المواد التعليمية")}</CardTitle>
+                            <CardDescription>{t("المحاضرات والملفات المتاحة")}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4">
                             {course.materials.map((material, idx) => (
                                     <div
                                     key={idx}
-                                    className="flex items-center justify-between p-4 rounded-lg border bg-gray-50 hover:bg-gray-100 transition-colors"
+                                    className="flex items-center justify-between p-4 rounded-lg border bg-muted/50 hover:bg-muted transition-colors"
                                     >
                                         <div className="flex items-center gap-3">
                                             <span className="text-2xl">
@@ -185,12 +188,12 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                                             </span>
                                             <div>
                                             <p className="font-semibold">{material.title}</p>
-                                            <p className="text-xs text-gray-500 capitalize">
+                                            <p className="text-xs text-muted-foreground capitalize">
                                                 {material.type}
                                             </p>
                                             </div>
                                         </div>
-                                        <Button variant="outline" size="sm" nativeButton={false} render={<a href={material.url} target="_blank" rel="noopener noreferrer" />}>عرض / تحميل</Button>
+                                        <Button variant="outline" size="sm" nativeButton={false} render={<a href={material.url} target="_blank" rel="noopener noreferrer" />}>{t("عرض / تحميل")}</Button>
                                     </div>
                                 ))}
                             </div>
@@ -199,10 +202,10 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                     ) : (
                         <Card>
                         <CardHeader>
-                            <CardTitle>المواد التعليمية</CardTitle>
+                            <CardTitle>{t("المواد التعليمية")}</CardTitle>
                         </CardHeader>
-                        <CardContent className="text-center text-gray-500 py-8">
-                            <p>لا توجد مواد تعليمية متاحة حالياً</p>
+                        <CardContent className="text-center text-muted-foreground py-8">
+                            <p>{t("لا توجد مواد تعليمية متاحة حالياً")}</p>
                         </CardContent>
                         </Card>
                 )}
@@ -212,18 +215,18 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
             <div className="space-y-6">
             <Card>
                 <CardHeader>
-                <CardTitle>معلومات إضافية</CardTitle>
+                <CardTitle>{t("معلومات إضافية")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                 {course.schedule && (
                     <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-500">الموعد</span>
+                    <span className="text-muted-foreground">{t("الموعد")}</span>
                     <span className="font-medium">{course.schedule}</span>
                     </div>
                 )}
                 {course.requirements && (
                     <div className="py-2 border-b">
-                    <span className="text-gray-500 block mb-1">المتطلبات</span>
+                    <span className="text-muted-foreground block mb-1">{t("المتطلبات")}</span>
                     <span className="block font-medium text-amber-600">
                         {course.requirements}
                     </span>
@@ -231,32 +234,32 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ id: st
                 )}
                 {course.format && (
                     <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-gray-500">التسجيل</span>
+                    <span className="text-muted-foreground">{t("التسجيل")}</span>
                     <span className="font-medium">{course.format}</span>
                     </div>
                 )}
                 <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-500">الطلاب المسجلين</span>
+                    <span className="text-muted-foreground">{t("الطلاب المسجلين")}</span>
                     <span className="font-medium">{course.studentsCount}</span>
                 </div>
                 </CardContent>
                 <CardFooter>
-                <Button className="w-full text-lg py-6">التسجيل في المادة</Button>
+                <Button className="w-full text-lg py-6">{t("التسجيل في المادة")}</Button>
                 </CardFooter>
             </Card>
             
             {/* Professor Info */}
             <Card>
                 <CardHeader>
-                <CardTitle>مدرس المادة</CardTitle>
+                <CardTitle>{t("مدرس المادة")}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">
+                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
                     {course.professor?.name?.[0]}
                 </div>
                 <div>
                     <p className="font-bold">{course.professor?.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                     {course.professor?.email}
                     </p>
                 </div>

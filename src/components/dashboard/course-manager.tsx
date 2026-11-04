@@ -20,6 +20,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/components/language-provider"
 
 const gradeSchema = z.object({
   grade: z.coerce.number().min(0).max(100),
@@ -59,6 +60,8 @@ interface GradeResponse {
 }
 
 export function CourseManager() {
+  const { t } = useI18n()
+
   const params = useParams()
   const courseId = params.id as string
   const router = useRouter()
@@ -123,11 +126,11 @@ export function CourseManager() {
         return
         }
 
-        toast.success("تم حفظ الدرجة بنجاح")
+        toast.success(t("تم حفظ الدرجة بنجاح"))
         setIsSheetOpen(false)
         mutate(`/api/courses/${courseId}/grades`)
     } catch {
-        toast.error("حدث خطأ أثناء حفظ الدرجة")
+        toast.error(t("حدث خطأ أثناء حفظ الدرجة"))
     }
     }
 
@@ -138,8 +141,8 @@ export function CourseManager() {
     if (!courseData?.success || !courseData.course) {
     return (
         <div className="text-center py-20">
-        <h3 className="text-lg text-destructive">لم يتم العثور على المادة أو غير مصرح لك بالوصول</h3>
-        <Button onClick={() => router.back()} variant="outline" className="mt-4">عودة</Button>
+        <h3 className="text-lg text-destructive">{t("لم يتم العثور على المادة أو غير مصرح لك بالوصول")}</h3>
+        <Button onClick={() => router.back()} variant="outline" className="mt-4">{t("عودة")}</Button>
         </div>
     )
     }
@@ -153,15 +156,15 @@ export function CourseManager() {
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
                         <h2 className="text-3xl font-bold tracking-tight">{course.title}</h2>
-                        <p className="text-muted-foreground">{course.code} • {course.semester} {course.year}</p>
+                        <p className="text-muted-foreground">{course.code} • {t(course.semester)} {course.year}</p>
                     </div>
-                    <Button variant="outline" onClick={() => router.back()}>عودة للوحة التحكم</Button>
+                    <Button variant="outline" onClick={() => router.back()}>{t("عودة للوحة التحكم")}</Button>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-3">
                     <Card className="glass-card">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">الطلاب المسجلين</CardTitle>
+                        <CardTitle className="text-sm font-medium">{t("الطلاب المسجلين")}</CardTitle>
                         <Users className="w-4 h-4 text-muted-foreground" />
                         </CardHeader>
                         
@@ -173,7 +176,7 @@ export function CourseManager() {
 
                     <Card className="glass-card">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">متوسط الدرجات</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("متوسط الدرجات")}</CardTitle>
                             <GraduationCap className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
 
@@ -189,7 +192,7 @@ export function CourseManager() {
 
                     <Card className="glass-card">
                         <CardHeader>
-                            <CardTitle className="text-sm font-medium">الساعات المعتمدة</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t("الساعات المعتمدة")}</CardTitle>
                             <BookOpen className="w-4 h-4 text-muted-foreground" />
                         </CardHeader>
                     
@@ -204,22 +207,22 @@ export function CourseManager() {
 
                 <Card className="glass-card">
                     <CardHeader>
-                        <CardTitle>قائمة الطلاب والدرجات</CardTitle>
-                        <CardDescription>إدارة درجات الطلاب للمادة</CardDescription>
+                        <CardTitle>{t("قائمة الطلاب والدرجات")}</CardTitle>
+                        <CardDescription>{t("إدارة درجات الطلاب للمادة")}</CardDescription>
                     </CardHeader>
 
                     <CardContent>
                         {students.length === 0 ? (
-                        <div className="text-center py-10 text-muted-foreground">لا يوجد طلاب مسجلين في هذه المادة بعد</div>
+                        <div className="text-center py-10 text-muted-foreground">{t("لا يوجد طلاب مسجلين في هذه المادة بعد")}</div>
                         ) : (
                         <div className="relative overflow-x-auto">
-                            <table className="w-full text-sm text-right">
+                            <table className="w-full text-sm text-start">
                             <thead className="text-xs uppercase bg-muted/50 text-muted-foreground">
                                 <tr>
-                                <th className="px-6 py-3 rounded-r-md">الطالب</th>
-                                <th className="px-6 py-3">البريد الإلكتروني</th>
-                                <th className="px-6 py-3">الدرجة</th>
-                                <th className="px-6 py-3 rounded-l-md text-left">إجراءات</th>
+                                <th className="px-6 py-3 rounded-s-md">{t("الطالب")}</th>
+                                <th className="px-6 py-3">{t("البريد الإلكتروني")}</th>
+                                <th className="px-6 py-3">{t("الدرجة")}</th>
+                                <th className="px-6 py-3 rounded-e-md text-end">{t("إجراءات")}</th>
                                 </tr>
                             </thead>
 
@@ -247,8 +250,8 @@ export function CourseManager() {
                                                 className={cn(
                                                 "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
                                                 grade.score >= 60
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-red-100 text-red-800"
+                                                    ? "bg-primary/15 text-primary"
+                                                    : "bg-destructive/15 text-destructive"
                                                 )}
                                             >
                                                 {grade.score}
@@ -257,13 +260,13 @@ export function CourseManager() {
                                             <span className="text-muted-foreground">—</span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-left">
+                                        <td className="px-6 py-4 text-end">
                                             <Button
                                             size="sm"
                                             variant="outline"
                                             onClick={() => openGradeSheet(student)}
                                             >
-                                            {grade ? "تعديل الدرجة" : "رصد درجة"}
+                                            {grade ? t("تعديل الدرجة") : t("رصد درجة")}
                                             </Button>
                                         </td>
                                         </tr>
@@ -279,7 +282,7 @@ export function CourseManager() {
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <SheetContent side="left">
                         <SheetHeader>
-                        <SheetTitle>رصد درجة للطالب</SheetTitle>
+                        <SheetTitle>{t("رصد درجة للطالب")}</SheetTitle>
                         <SheetDescription>
                             {selectedStudent?.name}
                         </SheetDescription>
@@ -291,7 +294,7 @@ export function CourseManager() {
                             >
                                 <div className="space-y-2">
                                     <label htmlFor="grade" className="text-sm font-medium">
-                                    الدرجة (من 100)
+                                    {t("الدرجة (من 100)")}
                                     </label>
                                     <input
                                     id="grade"
@@ -308,7 +311,7 @@ export function CourseManager() {
                                 </div>
 
                                 <div className="space-y-2">
-                                <label htmlFor="comment" className="text-sm font-medium">ملاحظات (اختياري)</label>
+                                <label htmlFor="comment" className="text-sm font-medium">{t("ملاحظات (اختياري)")}</label>
                                     <textarea
                                         id="comment"
                                         className={cn(
@@ -320,8 +323,8 @@ export function CourseManager() {
                                 </div>
 
                                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                                    {isSubmitting ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <Save className="ml-2 h-4 w-4" />}
-                                    حفظ
+                                    {isSubmitting ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Save className="me-2 h-4 w-4" />}
+                                    {t("حفظ")}
                                 </Button>
 
                             </form>

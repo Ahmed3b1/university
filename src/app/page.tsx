@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, GraduationCap, Users, BookOpen, Loader2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useEffect, useState } from "react"
+import { useI18n } from "@/components/language-provider"
 
 interface UserSession {
   id: string
@@ -15,6 +16,8 @@ interface UserSession {
 }
 
 export default function Home(){
+  const { t } = useI18n()
+
   const [user ,setUser] = useState<UserSession | null>(null)
   const [isLoading , setIsLoading] = useState(true)
 
@@ -37,12 +40,11 @@ export default function Home(){
   return(
     <div className="flex flex-col items-center justify-center space-y-12 py-12 md:py-24">
       <div className="text-center space-y-4 max-w-3xl">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl bg-clip-text text-transparent
-        bg-linear-to-l from-indigo-500 via-purple-500 to-pink-500">
-          مستقبل إدارة الجامعات
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-brand">
+          {t("مستقبل إدارة الجامعات")}
         </h1>
         <p className="text-xl text-muted-foreground">
-          EduCore منصة اختر دورك أدناه لاستكشاف لوحة التحكم.
+          {t("EduLrn منصة اختر دورك أدناه لاستكشاف لوحة التحكم.")}
         </p>
 
       </div>
@@ -50,25 +52,25 @@ export default function Home(){
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl px-4">
         {[
           {
-            title: "المدير / العميد",
+            title: t("المدير / العميد"),
             role: "admin",
             icon: GraduationCap,
-            description: "مراقبة الجامعات والتسجيل والإيرادات ومؤشرات الأداء.",
-            color: "text-indigo-500"
+            description: t("مراقبة الجامعات والتسجيل والإيرادات ومؤشرات الأداء."),
+            color: "text-primary"
           },
           {
-            title: "الأستاذ",
+            title: t("الأستاذ"),
             role: "professor",
             icon: Users,
-            description: "إدارة المواد وتتبع تقدم الطلاب وتقييم الواجبات.",
-            color: "text-purple-500"
+            description: t("إدارة المواد وتتبع تقدم الطلاب وتقييم الواجبات."),
+            color: "text-foreground"
           },
           {
-            title: "الطالب",
+            title: t("الطالب"),
             role: "student",
             icon: BookOpen,
-            description: "عرض الجداول والدرجات وإدارة الحياة الأكاديمية.",
-            color: "text-pink-500"
+            description: t("عرض الجداول والدرجات وإدارة الحياة الأكاديمية."),
+            color: "text-primary"
           }
         ].map((item)=>(
           <Link key={item.role} href={`/dashboard/${item.role}`} className="group">
@@ -81,8 +83,7 @@ export default function Home(){
               </CardHeader>
               <CardContent>
                 <Button className="w-full group-hover:bg-primary/90" variant="secondary">
-                  دخول لوحة التحكم <ArrowLeft className="mr-2 w-4 h-4 transition-transform
-                  group-hover:-translate-x-1" />
+                  {t("دخول لوحة التحكم")} <ArrowLeft className="ms-2 w-4 h-4 transition-transform ltr:rotate-180 rtl:group-hover:-translate-x-1 ltr:group-hover:translate-x-1" />
                 </Button>
               </CardContent>
 
@@ -98,19 +99,19 @@ export default function Home(){
         ) : user ?(
           <Link href={`/dashboard/${user.role}`}>
             <Button variant="secondary" size="lg">
-              لوحة التحكم
+              {t("لوحة التحكم")}
             </Button>
           </Link>
         ) : (
           <>
             <Link href="/login">
               <Button variant="secondary" size="lg">
-                تسجيل الدخول
+                {t("تسجيل الدخول")}
               </Button>
             </Link>
             <Link href="/signup">
               <Button variant="outline" size="lg">
-                إنشاء حساب جديد
+                {t("إنشاء حساب جديد")}
               </Button>
             </Link>
           </>

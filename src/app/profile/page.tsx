@@ -3,8 +3,11 @@ import { getSession } from "@/lib/auth"
 import dbConnect from "@/lib/mongodb"
 import User from "@/models/User"
 import { redirect } from "next/navigation"
+import { getT } from "@/lib/i18n/server"
 
 export default async function ProfilePage() {
+  const t = await getT()
+
   const session = await getSession()
   if (!session) redirect("/login")
 
@@ -23,11 +26,11 @@ export default async function ProfilePage() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-l from-indigo-500 to-purple-600">
-          البيانات الشخصية
+        <h1 className="text-3xl font-bold text-brand">
+          {t("البيانات الشخصية")}
         </h1>
         <p className="text-muted-foreground mt-2">
-          إدارة معلومات حسابك الشخصي
+          {t("إدارة معلومات حسابك الشخصي")}
         </p>
       </div>
 

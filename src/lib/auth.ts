@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret-for-development')
-const COOKIE_NAME = 'educore-token'
+const COOKIE_NAME = 'edulrn-token'
 
 export interface JWTPayload {
   userId: string

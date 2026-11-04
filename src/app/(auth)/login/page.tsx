@@ -13,8 +13,11 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { loginSchema, LoginInput } from "@/lib/validations"
+import { useI18n } from "@/components/language-provider"
 
 export default function LoginPage() {
+  const { t } = useI18n()
+
   const router = useRouter()
   const [showPassword, setShowPassword] = React.useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = React.useState(true)
@@ -63,10 +66,10 @@ export default function LoginPage() {
         return
       }
 
-      toast.success("تم تسجيل الدخول بنجاح")
+      toast.success(t("تم تسجيل الدخول بنجاح"))
       router.push(`/dashboard/${result.user.role}`)
     } catch {
-      toast.error("حدث خطأ غير متوقع")
+      toast.error(t("حدث خطأ غير متوقع"))
     }
   }
 
@@ -89,12 +92,12 @@ export default function LoginPage() {
         <Card className="glass-card border-primary/10">
           <CardHeader className="text-center space-y-4">
             <div className="mx-auto bg-primary p-3 rounded-xl w-fit">
-              <GraduationCap className="h-8 w-8 text-white" />
+              <GraduationCap className="h-8 w-8 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-2xl">مرحباً بعودتك</CardTitle>
+              <CardTitle className="text-2xl">{t("مرحباً بعودتك")}</CardTitle>
               <CardDescription className="mt-2">
-                قم بتسجيل الدخول للوصول إلى حسابك
+                {t("قم بتسجيل الدخول للوصول إلى حسابك")}
               </CardDescription>
             </div>
           </CardHeader>
@@ -103,18 +106,18 @@ export default function LoginPage() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
                       <label htmlFor="email" className="text-sm font-medium">
-                          البريد الإلكتروني
+                          {t("البريد الإلكتروني")}
                       </label>
 
                       <div className="relative">
-                          <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <input
                           id="email"
                           type="email"
                           placeholder="name@example.com"
                           className={cn(
-                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm",
-                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background",
+                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 text-sm",
+                              "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 text-sm ring-offset-background",
                               "placeholder:text-muted-foreground",
                               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                               "disabled:cursor-not-allowed disabled:opacity-50",
@@ -127,7 +130,7 @@ export default function LoginPage() {
                       </div>
 
                       {errors.email &&(
-                        <p className="text-sm text-destructive">{errors.email.message}</p>
+                        <p className="text-sm text-destructive">{t(errors.email.message ?? "")}</p>
                       )}
 
                     {/* ⬇ error message for email, then closing tags */}
@@ -135,17 +138,17 @@ export default function LoginPage() {
 
                     <div className="space-y-2">
                       <label htmlFor="password" className="text-sm font-medium">
-                        كلمة المرور
+                        {t("كلمة المرور")}
                       </label>
 
                       <div className="relative">
-                        <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <input
                           id="password"
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
                           className={cn(
-                            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm",
+                            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 text-sm",
                             "ring-offset-background placeholder:text-muted-foreground",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                             "disabled:cursor-not-allowed disabled:opacity-50",
@@ -159,7 +162,7 @@ export default function LoginPage() {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -172,7 +175,7 @@ export default function LoginPage() {
                       </div>
 
                       {errors.password && (
-                        <p className="text-xs text-destructive">{errors.password.message}</p>
+                        <p className="text-xs text-destructive">{t(errors.password.message ?? "")}</p>
                       )}
 
 
@@ -182,21 +185,21 @@ export default function LoginPage() {
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
-                          <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                          جاري تسجيل الدخول...
+                          <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                          {t("جاري تسجيل الدخول...")}
                         </>
                       ) : (
-                        "تسجيل الدخول"
+                        t("تسجيل الدخول")
                       )}
                     </Button>
 
                     <p className="text-center text-sm text-muted-foreground">
-                      ليس لديك حساب؟{" "}
+                      {t("ليس لديك حساب؟")}{" "}
                       <Link
                         href="/signup"
                         className="text-primary hover:underline font-medium"
                       >
-                        إنشاء حساب جديد
+                        {t("إنشاء حساب جديد")}
                       </Link>
                     </p>
 

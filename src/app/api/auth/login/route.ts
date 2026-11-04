@@ -4,6 +4,7 @@ import User from '@/models/User'
 import { signToken, setAuthCookie } from '@/lib/auth'
 import { verifyPassword } from '@/lib/password'
 import { loginSchema } from '@/lib/validations'
+import { getT } from "@/lib/i18n/server"
 
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
 const MAX_ATTEMPTS = 5
@@ -33,11 +34,13 @@ function isRateLimited(ip: string): boolean {
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
         const ip = request.headers.get('x-forwarded-for') || 'unknown'
         if (isRateLimited(ip)) {
         return NextResponse.json(
-            { success: false, message: 'محاولات كثيرة جدا، يرجى المحاولة لاحقا' },
+            { success: false, message: t("محاولات كثيرة جدا، يرجى المحاولة لاحقا") },
             { status: 429 }
         )
         }
@@ -48,7 +51,7 @@ export async function POST(request: Request) {
 
         const validationResult = loginSchema.safeParse(body)
         if (!validationResult.success) {
-        const errors = validationResult.error.issues.map((e) => e.message)
+        const errors = validationResult.error.issues.map((e) => t(e.message))
         return NextResponse.json(
             { success: false, message: errors[0] },
             { status: 400 }
@@ -60,7 +63,7 @@ export async function POST(request: Request) {
         const user = await User.findOne({ email: email.toLowerCase() })
         if (!user) {
         return NextResponse.json(
-            { success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' },
+            { success: false, message: t("البريد الإلكتروني أو كلمة المرور غير صحيحة") },
             { status: 401 }
         )
         }
@@ -68,7 +71,7 @@ export async function POST(request: Request) {
         const isValid = await verifyPassword(password, user.password)
         if (!isValid) {
         return NextResponse.json(
-            { success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' },
+            { success: false, message: t("البريد الإلكتروني أو كلمة المرور غير صحيحة") },
             { status: 401 }
         )
         }
@@ -86,7 +89,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
         success: true,
-        message: 'تم تسجيل الدخول بنجاح',
+        message: t("تم تسجيل الدخول بنجاح"),
         user: {
             id: user._id.toString(),
             email: user.email,
@@ -98,7 +101,7 @@ export async function POST(request: Request) {
     }catch (error) {
         
         return NextResponse.json(
-        { success: false, message: 'حدث خطأ أثناء تسجيل الدخول' },
+        { success: false, message: t("حدث خطأ أثناء تسجيل الدخول") },
         { status: 500 }
         )
     }

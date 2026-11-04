@@ -10,8 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useI18n } from "@/components/language-provider"
 
 export default function ProfessorDashboardContent() {
+  const { t } = useI18n()
+
   const [courses, setCourses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
@@ -71,7 +74,7 @@ export default function ProfessorDashboardContent() {
       const data = await res.json()
 
       if (data.success) {
-        toast.success('تم إنشاء المادة بنجاح')
+        toast.success(t("تم إنشاء المادة بنجاح"))
         setIsCreateOpen(false)
         fetchCourses()
         setFormData({
@@ -87,11 +90,11 @@ export default function ProfessorDashboardContent() {
           image: '',
         })
       } else {
-        toast.error(data.message || 'حدث خطأ')
+        toast.error(data.message || t("حدث خطأ"))
       }
     } catch (error) {
       console.error('Error creating course:', error)
-      toast.error('حدث خطأ أثناء الاتصال بالخادم')
+      toast.error(t("حدث خطأ أثناء الاتصال بالخادم"))
     }
   }
 
@@ -112,16 +115,16 @@ export default function ProfessorDashboardContent() {
       const data = await res.json()
 
       if (data.success) {
-        toast.success('تمت إضافة المحتوى بنجاح')
+        toast.success(t("تمت إضافة المحتوى بنجاح"))
         setIsAddMaterialOpen(false)
         setMaterialData({ title: '', url: '', type: 'lecture' })
         fetchCourses()
       } else {
-        toast.error(data.message || 'حدث خطأ')
+        toast.error(data.message || t("حدث خطأ"))
       }
     } catch (error) {
       console.error('Error adding material:', error)
-      toast.error('حدث خطأ أثناء الاتصال بالخادم')
+      toast.error(t("حدث خطأ أثناء الاتصال بالخادم"))
     }
   }
 
@@ -137,7 +140,7 @@ export default function ProfessorDashboardContent() {
       }
     } catch (error) {
       console.error('Error fetching students:', error)
-      toast.error('فشل تحميل قائمة الطلاب')
+      toast.error(t("فشل تحميل قائمة الطلاب"))
     } finally {
       setViewLoading(false)
     }
@@ -147,17 +150,17 @@ export default function ProfessorDashboardContent() {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">موادك الدراسية</h2>
+        <h2 className="text-xl font-semibold">{t("موادك الدراسية")}</h2>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger render={<Button />}>إضافة مادة جديدة</DialogTrigger>
+          <DialogTrigger render={<Button />}>{t("إضافة مادة جديدة")}</DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background text-foreground" dir="rtl">
             <DialogHeader>
-              <DialogTitle>إضافة مادة جديدة</DialogTitle>
+              <DialogTitle>{t("إضافة مادة جديدة")}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreateCourse} className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                    <Label>عنوان المادة</Label>
+                    <Label>{t("عنوان المادة")}</Label>
                     <Input
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -166,7 +169,7 @@ export default function ProfessorDashboardContent() {
                     />
                     </div>
                     <div className="space-y-2">
-                    <Label>رمز المادة</Label>
+                    <Label>{t("رمز المادة")}</Label>
                     <Input
                         value={formData.code}
                         onChange={(e) => setFormData({ ...formData, code: e.target.value })}
@@ -177,7 +180,7 @@ export default function ProfessorDashboardContent() {
               </div>
 
               <div className="space-y-2">
-                <Label>الوصف</Label>
+                <Label>{t("الوصف")}</Label>
                 <Textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -186,24 +189,24 @@ export default function ProfessorDashboardContent() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                        <Label>الفصل</Label>
+                        <Label>{t("الفصل")}</Label>
                         <Select
                             value={formData.semester}
                             onValueChange={(val) => { if (val) setFormData({ ...formData, semester: val }) }}
                         >
                             <SelectTrigger>
-                            <SelectValue />
+                            <SelectValue>{(value: string | null) => (value ? t(value) : "")}</SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                            <SelectItem value="الفصل الأول">الفصل الأول</SelectItem>
-                            <SelectItem value="الفصل الثاني">الفصل الثاني</SelectItem>
-                            <SelectItem value="الفصل الصيفي">الفصل الصيفي</SelectItem>
+                            <SelectItem value="الفصل الأول">{t("الفصل الأول")}</SelectItem>
+                            <SelectItem value="الفصل الثاني">{t("الفصل الثاني")}</SelectItem>
+                            <SelectItem value="الفصل الصيفي">{t("الفصل الصيفي")}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
               
                     <div className="space-y-2">
-                    <Label>السنة</Label>
+                    <Label>{t("السنة")}</Label>
                     <Input
                         type="number"
                         value={formData.year}
@@ -212,7 +215,7 @@ export default function ProfessorDashboardContent() {
                     />
                     </div>
                     <div className="space-y-2">
-                    <Label>الساعات</Label>
+                    <Label>{t("الساعات")}</Label>
                     <Input
                         type="number"
                         value={formData.credits}
@@ -225,7 +228,7 @@ export default function ProfessorDashboardContent() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label>نوع المادة</Label>
+                    <Label>{t("نوع المادة")}</Label>
                     <Select
                     value={formData.type}
                     onValueChange={(val) => { if (val) setFormData({ ...formData, type: val }) }}
@@ -234,42 +237,42 @@ export default function ProfessorDashboardContent() {
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="undergraduate">بكالوريوس</SelectItem>
-                        <SelectItem value="graduate">دراسات عليا</SelectItem>
-                        <SelectItem value="online">أونلاين</SelectItem>
+                        <SelectItem value="undergraduate">{t("بكالوريوس")}</SelectItem>
+                        <SelectItem value="graduate">{t("دراسات عليا")}</SelectItem>
+                        <SelectItem value="online">{t("أونلاين")}</SelectItem>
                     </SelectContent>
                     </Select>
                 </div>
                 {formData.type === 'graduate' && (
                     <div className="space-y-2">
-                    <Label>المتطلبات</Label>
+                    <Label>{t("المتطلبات")}</Label>
                     <Textarea
                         value={formData.requirements}
                         onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                        placeholder="متطلبات القبول أو المواد السابقة..."
+                        placeholder={t("متطلبات القبول أو المواد السابقة...")}
                     />
                     </div>
                 )}
 
                 {formData.type === 'online' && (
               <div className="space-y-2">
-                <Label>المنصة / التنسيق</Label>
+                <Label>{t("المنصة / التنسيق")}</Label>
                 <Input
                   value={formData.format}
                   onChange={(e) => setFormData({ ...formData, format: e.target.value })}
-                  placeholder="مسجل، مباشر، مختلط..."
+                  placeholder={t("مسجل، مباشر، مختلط...")}
                 />
               </div>
             )}
             <div className="space-y-2">
-              <Label>رابط الصورة (اختياري)</Label>
+              <Label>{t("رابط الصورة (اختياري)")}</Label>
               <Input
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 placeholder="https://example.com/image.jpg"
               />
             </div>
-            <Button type="submit" className="w-full">إنشاء المادة</Button>
+            <Button type="submit" className="w-full">{t("إنشاء المادة")}</Button>
           </form>
         </DialogContent>
       </Dialog>
@@ -279,11 +282,11 @@ export default function ProfessorDashboardContent() {
       <Dialog open={isAddMaterialOpen} onOpenChange={setIsAddMaterialOpen}>
         <DialogContent className="bg-background text-foreground" dir="rtl">
           <DialogHeader>
-            <DialogTitle>إضافة محتوى تعليمي</DialogTitle>
+            <DialogTitle>{t("إضافة محتوى تعليمي")}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleAddMaterial} className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label>عنوان المحتوى</Label>
+              <Label>{t("عنوان المحتوى")}</Label>
               <Input
                 value={materialData.title}
                 onChange={(e) => setMaterialData({ ...materialData, title: e.target.value })}
@@ -291,7 +294,7 @@ export default function ProfessorDashboardContent() {
               />
             </div>
             <div className="space-y-2">
-              <Label>الرابط (URL)</Label>
+              <Label>{t("الرابط (URL)")}</Label>
               <Input
                 value={materialData.url}
                 onChange={(e) => setMaterialData({ ...materialData, url: e.target.value })}
@@ -301,7 +304,7 @@ export default function ProfessorDashboardContent() {
               />
             </div>
             <div className="space-y-2">
-              <Label>النوع</Label>
+              <Label>{t("النوع")}</Label>
               <Select
                 value={materialData.type}
                 onValueChange={(val) => { if (val) setMaterialData({ ...materialData, type: val }) }}
@@ -310,13 +313,13 @@ export default function ProfessorDashboardContent() {
                     <SelectValue/>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="lecture">محاضرة</SelectItem>
-                    <SelectItem value="assignment">واجب</SelectItem>
-                    <SelectItem value="reading">قراءة</SelectItem>
+                    <SelectItem value="lecture">{t("محاضرة")}</SelectItem>
+                    <SelectItem value="assignment">{t("واجب")}</SelectItem>
+                    <SelectItem value="reading">{t("قراءة")}</SelectItem>
                 </SelectContent>
                 </Select>
             </div>
-            <Button type="submit" className="w-full">إدراج</Button>
+            <Button type="submit" className="w-full">{t("إدراج")}</Button>
             </form>
         </DialogContent>
         </Dialog>
@@ -325,20 +328,20 @@ export default function ProfessorDashboardContent() {
         <Dialog open={isViewStudentsOpen} onOpenChange={setIsViewStudentsOpen}>
         <DialogContent className="bg-background text-foreground" dir="rtl">
             <DialogHeader>
-            <DialogTitle>الطلاب المسجلين</DialogTitle>
+            <DialogTitle>{t("الطلاب المسجلين")}</DialogTitle>
           </DialogHeader>
           <div className="mt-4 max-h-[60vh] overflow-y-auto">
             {viewLoading ? (
-              <div className="text-center py-4">جاري التحميل...</div>
+              <div className="text-center py-4">{t("جاري التحميل...")}</div>
             ) : selectedCourseStudents.length === 0 ? (
-              <div className="text-center py-4 text-gray-500">لا يوجد طلاب مسجلين في هذه المادة</div>
+              <div className="text-center py-4 text-muted-foreground">{t("لا يوجد طلاب مسجلين في هذه المادة")}</div>
             ) : (
               <ul className="space-y-4">
                 {selectedCourseStudents.map((student: any) => (
-                  <li key={student._id || student.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <li key={student._id || student.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                     <div>
                       <p className="font-semibold">{student.name}</p>
-                      <p className="text-sm text-gray-500">{student.email}</p>
+                      <p className="text-sm text-muted-foreground">{student.email}</p>
                     </div>
                   </li>
                 ))}
@@ -349,10 +352,10 @@ export default function ProfessorDashboardContent() {
       </Dialog>
 
       {loading ? (
-        <div>جاري التحميل...</div>
+        <div>{t("جاري التحميل...")}</div>
       ) : courses.length === 0 ? (
-        <div className="text-center py-10 bg-gray-50 border border-dashed rounded-lg">
-          <p className="text-gray-500">لم تقم بإضافة أي مواد بعد</p>
+        <div className="text-center py-10 bg-muted/50 border border-dashed rounded-lg">
+          <p className="text-muted-foreground">{t("لم تقم بإضافة أي مواد بعد")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -364,27 +367,27 @@ export default function ProfessorDashboardContent() {
                     <CardTitle>{course.title}</CardTitle>
                     <CardDescription>{course.code}</CardDescription>
                   </div>
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded">{course.type}</span>
+                  <span className="text-xs bg-muted px-2 py-1 rounded">{course.type}</span>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-sm space-y-1 text-gray-600">
-                  <p>الطلاب: {course.studentsCount}</p>
-                  <p>{course.semester} {course.year}</p>
+                <div className="text-sm space-y-1 text-muted-foreground">
+                  <p>{t("الطلاب:")} {course.studentsCount}</p>
+                  <p>{t(course.semester)} {course.year}</p>
                   {course.materials && (
-                    <p>أدوات تعليمية: {course.materials.length}</p>
+                    <p>{t("أدوات تعليمية:")} {course.materials.length}</p>
                   )}
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col gap-2">
                 <div className="flex gap-2 w-full">
-                  <Button variant="outline" size="sm" className="flex-1">تعديل</Button>
+                  <Button variant="outline" size="sm" className="flex-1">{t("تعديل")}</Button>
                   <Button variant="secondary" size="sm" className="flex-1" onClick={() => openAddMaterial(course._id)}>
-                    إضافة محتوى
+                    {t("إضافة محتوى")}
                   </Button>
                 </div>
                 <Button variant="ghost" size="sm" className="w-full" onClick={() => openViewStudents(course._id)}>
-                  عرض الطلاب المسجلين
+                  {t("عرض الطلاب المسجلين")}
                 </Button>
               </CardFooter>
             </Card>

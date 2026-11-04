@@ -9,6 +9,7 @@ import { Users, FileText, MoreVertical, Plus, Loader2 } from "lucide-react"
 import { fetcher } from "@/lib/api"
 import { CourseCard } from "@/components/courses/course-card"
 import { toast } from "sonner"
+import { useI18n } from "@/components/language-provider"
 
 interface Course {
   id: string
@@ -23,15 +24,17 @@ interface Course {
 }
 
 export function ProfessorDashboard() {
+  const { t } = useI18n()
+
   const { data, isLoading } = useSWR<{ courses: Course[] }>("/api/courses", fetcher)
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">موادي</h2>
-        <Button onClick={() => toast.info("سيتم إضافة ميزة إنشاء مادة قريبا")} className="gap-2">
+        <h2 className="text-3xl font-bold tracking-tight">{t("موادي")}</h2>
+        <Button onClick={() => toast.info(t("سيتم إضافة ميزة إنشاء مادة قريبا"))} className="gap-2">
           <Plus className="h-4 w-4" />
-          إنشاء مادة جديدة
+          {t("إنشاء مادة جديدة")}
         </Button>
       </div>
 
@@ -46,22 +49,22 @@ export function ProfessorDashboard() {
         </div>
       ) : (
         <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
-            <h3 className="text-lg font-medium">لم تقم بإنشاء أي مواد بعد</h3>
+            <h3 className="text-lg font-medium">{t("لم تقم بإنشاء أي مواد بعد")}</h3>
             <p className="text-muted-foreground mt-2">
-            ابدأ بإنشاء مادتك الأولى.
+            {t("ابدأ بإنشاء مادتك الأولى.")}
             </p>
         </div>
         )}
 
         <Card className="glass-card mt-8">
             <CardHeader>
-                <CardTitle>سجل الدرجات - عرض سريع</CardTitle>
-                <CardDescription>الطلاب الذين يحتاجون إلى تقييم.</CardDescription>
+                <CardTitle>{t("سجل الدرجات - عرض سريع")}</CardTitle>
+                <CardDescription>{t("الطلاب الذين يحتاجون إلى تقييم.")}</CardDescription>
             </CardHeader>
 
             <CardContent>
                 <p className="text-muted-foreground text-center py-8">
-                لا توجد بيانات متاحة حاليا.
+                {t("لا توجد بيانات متاحة حاليا.")}
                 </p>
             </CardContent>
         </Card>

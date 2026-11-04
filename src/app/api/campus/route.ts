@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongodb'
 import CampusEvent from '@/models/CampusEvent'
 import { getSession } from '@/lib/auth'
 import { createCampusEventSchema } from '@/lib/validations'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
   try {
@@ -19,18 +20,20 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
         const session = await getSession()
         if (!session) {
         return NextResponse.json(
-            { success: false, message: "غير مصرح" },
+            { success: false, message: t("غير مصرح") },
             { status: 401 }
         )
         }
 
         if (session.role === "student") {
         return NextResponse.json(
-            { success: false, message: "غير مصرح" },
+            { success: false, message: t("غير مصرح") },
             { status: 403 }
         )
         }
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
         const body = await request.json()
         const validationResult = createCampusEventSchema.safeParse(body)
         if (!validationResult.success) {
-        const errors = validationResult.error.issues.map((e) => e.message)
+        const errors = validationResult.error.issues.map((e) => t(e.message))
         return NextResponse.json(
             { success: false, message: errors[0] },
             { status: 400 }
@@ -50,13 +53,13 @@ export async function POST(request: Request) {
 
             return NextResponse.json({
             success: true,
-            message: 'تم إنشاء الفعالية بنجاح',
+            message: t("تم إنشاء الفعالية بنجاح"),
             event,
             })
     } catch (error) {
             console.error('Create campus event error:', error)
             return NextResponse.json(
-            { success: false, message: 'حدث خطأ' },
+            { success: false, message: t("حدث خطأ") },
             { status: 500 }
             )
     }

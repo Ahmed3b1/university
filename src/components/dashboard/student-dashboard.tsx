@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CourseCard } from "@/components/courses/course-card"
 import { fetcher } from "@/lib/api"
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/components/language-provider"
 
 interface User {
   id: string
@@ -32,6 +33,8 @@ interface Course {
 }
 
 export function StudentDashboard() {
+  const { t } = useI18n()
+
   const { data: userData } = useSWR<{ user: User }>("/api/auth/me", fetcher)
   const { data: enrolledCoursesData, isLoading: isLoadingEnrolled } = useSWR<{ courses: Course[] }>("/api/courses", fetcher)
   const { data: allCoursesData, isLoading: isLoadingAll } = useSWR<{ courses: Course[] }>("/api/courses?browse=true", fetcher)
@@ -51,11 +54,11 @@ export function StudentDashboard() {
         return
       }
 
-      toast.success("تم التسجيل في المادة بنجاح")
+      toast.success(t("تم التسجيل في المادة بنجاح"))
       mutate("/api/courses")
       mutate("/api/courses?browse=true")
     } catch {
-      toast.error("حدث خطأ أثناء التسجيل")
+      toast.error(t("حدث خطأ أثناء التسجيل"))
     }
   }
 
@@ -70,19 +73,19 @@ export function StudentDashboard() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-l from-indigo-600 to-purple-700 p-8 text-white shadow-2xl sm:p-12">
+        <div className="relative overflow-hidden rounded-3xl ltr:bg-linear-to-r rtl:bg-linear-to-l from-card to-secondary border border-primary/30 p-8 text-foreground shadow-2xl sm:p-12">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                مرحباً {userData?.user.name ? userData.user.name.split(" ")[0] : "..."}
+                {t("مرحباً")} {userData?.user.name ? userData.user.name.split(" ")[0] : "..."}
               </h1>
-              <p className="text-lg text-indigo-100 max-w-xl">
-                مرحباً بك في فصل دراسي جديد، تصفح المواد المتاحة وقم بالتسجيل لتبدأ رحلتك
+              <p className="text-lg text-muted-foreground max-w-xl">
+                {t("مرحباً بك في فصل دراسي جديد، تصفح المواد المتاحة وقم بالتسجيل لتبدأ رحلتك")}
               </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center rounded-2xl bg-white/10 p-6 backdrop-blur-md border border-white/20 min-w-50">
-              <span className="text-sm font-medium text-indigo-200">المواد المسجلة</span>
+            <div className="flex flex-col items-center justify-center rounded-2xl bg-background/40 p-6 backdrop-blur-md border border-border min-w-50">
+              <span className="text-sm font-medium text-muted-foreground">{t("المواد المسجلة")}</span>
               <span className="text-6xl font-black tracking-tighter">
                 {enrolledCoursesData?.courses?.length || 0}
               </span>
@@ -90,15 +93,15 @@ export function StudentDashboard() {
             </div>
           </div>
 
-            <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-indigo-500/30 blur-3xl"/>
+            <div className="absolute -end-20 -top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"/>
 
         </div>
       </motion.div>
 
         <Tabs defaultValue="enrolled" className="space-y-6">
             <TabsList className="bg-muted/50 p-1">
-                <TabsTrigger value="enrolled">المواد المسجلة</TabsTrigger>
-                <TabsTrigger value="browse">تصفح المواد المتاحة</TabsTrigger>
+                <TabsTrigger value="enrolled">{t("المواد المسجلة")}</TabsTrigger>
+                <TabsTrigger value="browse">{t("تصفح المواد المتاحة")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="enrolled" className="space-y-6">
@@ -118,8 +121,8 @@ export function StudentDashboard() {
                 ) : (
                 <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
                     <BookOpen className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <h3 className="mt-4 text-lg font-medium">لا توجد مواد مسجلة</h3>
-                    <p className="text-muted-foreground mt-2">قم بزيارة تبويب &quot;تصفح المواد&quot; للتسجيل في مواد جديدة</p>
+                    <h3 className="mt-4 text-lg font-medium">{t("لا توجد مواد مسجلة")}</h3>
+                    <p className="text-muted-foreground mt-2">{t("قم بزيارة تبويب \"تصفح المواد\" للتسجيل في مواد جديدة")}</p>
                 </div>
                 )}
             </TabsContent>
@@ -141,7 +144,7 @@ export function StudentDashboard() {
                     </div>
                 ) : (
                     <div className="text-center py-20 bg-muted/20 rounded-xl border border-dashed">
-                    <p className="text-muted-foreground">لا توجد مواد متاحة للتسجيل حاليا</p>
+                    <p className="text-muted-foreground">{t("لا توجد مواد متاحة للتسجيل حاليا")}</p>
                     </div>
                 )}
             </TabsContent>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import dbConnect from '@/lib/mongodb'
 import Notification from '@/models/Notification'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
   try {
@@ -25,6 +26,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
@@ -49,7 +52,7 @@ export async function POST(request: Request) {
     return NextResponse.json(notification, { status: 201 })
   } catch (error) {
     console.error('Notification Creation Error:' , error)
-    return NextResponse.json({ error: "حدث خطأ أثناء إنشاء الإشعار" }, { status: 500 })
+    return NextResponse.json({ error: t("حدث خطأ أثناء إنشاء الإشعار") }, { status: 500 })
   }
 }
     

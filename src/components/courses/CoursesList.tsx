@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useI18n } from "@/components/language-provider"
 
 interface Course {
     id: string
@@ -31,6 +32,8 @@ interface CoursesListProps {
 }
 
 export default function CoursesList({ type }: CoursesListProps) {
+  const { t } = useI18n()
+
     const [courses, setCourses] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -77,8 +80,8 @@ export default function CoursesList({ type }: CoursesListProps) {
 
     if (courses.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                <p className="text-xl text-gray-500">لا توجد مواد دراسية متاحة حالياً في هذا القسم.</p>
+            <div className="text-center py-20 bg-muted/50 rounded-lg border border-dashed border-border">
+                <p className="text-xl text-muted-foreground">{t("لا توجد مواد دراسية متاحة حالياً في هذا القسم.")}</p>
             </div>
         )
     }
@@ -105,14 +108,14 @@ export default function CoursesList({ type }: CoursesListProps) {
                     </div>
                     )}
 
-                    <div className='absolute top-2 left-2 flex gap-2'>
-                    <span className='bg-white/90 backdrop-blur px-2 py-1 text-xs font-bold rounded text-primary border border-gray-100 shadow-sm'>
+                    <div className='absolute top-2 end-2 flex gap-2'>
+                    <span className='bg-background/80 backdrop-blur px-2 py-1 text-xs font-bold rounded text-primary border border-border shadow-sm'>
                         {course.code}
                     </span>
 
                     {course.type === "online" && (
-                        <span className='bg-green-100 text-green-800 px-2 py-1 text-xs font-bold rounded border border-green-200 shadow-sm'>
-                        أونلاين
+                        <span className='bg-primary/15 text-primary px-2 py-1 text-xs font-bold rounded border border-primary/30 shadow-sm'>
+                        {t("أونلاين")}
                         </span>
                     )}
                     </div>
@@ -121,37 +124,37 @@ export default function CoursesList({ type }: CoursesListProps) {
                 <CardHeader>
                     <CardTitle className='line-clamp-1'>{course.title}</CardTitle>
                     <CardDescription className='line-clamp-2 min-h-10'>
-                    {course.description || 'لا يوجد وصف متاح'}
+                    {course.description || t("لا يوجد وصف متاح")}
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className='grow space-y-2 text-sm text-gray-600'>
+                <CardContent className='grow space-y-2 text-sm text-muted-foreground'>
                     <div className='flex items-center gap-2'>
                     <span className="w-4 text-center">👨‍🏫</span>
-                    <span>{course.professor?.name || 'غير محدد'}</span>
+                    <span>{course.professor?.name || t("غير محدد")}</span>
                     </div>
 
                     <div className='flex items-center gap-2'>
                     <span className="w-4 text-center">📅</span>
-                    <span>{course.semester} - {course.year}</span>
+                    <span>{t(course.semester)} - {course.year}</span>
                     </div>
 
                     <div className='flex items-center gap-2'>
                         <span className="w-4 text-center">🎓</span>
-                        <span>{course.credits} ساعات معتمدة</span>
+                        <span>{course.credits} {t("ساعات معتمدة")}</span>
                     </div>
 
                     {course.requirements && (
                     <div className='flex items-center gap-2 text-amber-600'>
                         <span className="w-4 text-center">⚠️</span>
                         <span className="line-clamp-1" title={course.requirements}>
-                        متطلبات: {course.requirements}
+                        {t("متطلبات:")} {course.requirements}
                         </span>
                     </div>
                     )}
                 </CardContent>
-                <CardFooter className="pt-4 border-t border-gray-100 mt-auto">
-                    <Button className="w-full" variant="outline" nativeButton={false} render={<Link href={`/courses/${course.id}`} />}>عرض التفاصيل</Button>
+                <CardFooter className="pt-4 border-t border-border mt-auto">
+                    <Button className="w-full" variant="outline" nativeButton={false} render={<Link href={`/courses/${course.id}`} />}>{t("عرض التفاصيل")}</Button>
                 </CardFooter>
 
                 </Card>

@@ -5,8 +5,11 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { useI18n } from "@/components/language-provider"
 
 export default function StudentDashboardContent() {
+  const { t } = useI18n()
+
   const [courses, setCourses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -29,15 +32,15 @@ export default function StudentDashboardContent() {
   }, [])
 
   if (loading) {
-    return <div className="text-center py-20">جاري تحميل مقرراتك...</div>
+    return <div className="text-center py-20">{t("جاري تحميل مقرراتك...")}</div>
   }
 
   if (courses.length === 0) {
     return (
-      <div className="text-center py-20 bg-gray-50 rounded-lg border border-dashed text-gray-500">
-        <p className="text-xl mb-4">أنت غير مسجل في أي مواد حالياً</p>
+      <div className="text-center py-20 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">
+        <p className="text-xl mb-4">{t("أنت غير مسجل في أي مواد حالياً")}</p>
         <Link href="/courses">
-          <Button>تصفح المواد المتاحة</Button>
+          <Button>{t("تصفح المواد المتاحة")}</Button>
         </Link>
       </div>
     )
@@ -54,19 +57,19 @@ export default function StudentDashboardContent() {
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                        <span>نسبة التقدم</span>
-                        <span>{course.myGrade || undefined ? `${course.myGrade}%` : 'لم يتم التقييم'}</span>
+                        <span>{t("نسبة التقدم")}</span>
+                        <span>{course.myGrade || undefined ? `${course.myGrade}%` : t("لم يتم التقييم")}</span>
                     </div>
                     <Progress value={course.myGrade || 0} className="h-2" />
                     </div>
                     {course.materials && course.materials.length > 0 && (
-                    <div className="text-sm text-gray-500">
-                        {course.materials.length} ملفات تعليمية
+                    <div className="text-sm text-muted-foreground">
+                        {course.materials.length} {t("ملفات تعليمية")}
                     </div>
                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button className="w-full" nativeButton={false} render={<Link href={`/courses/${course._id}`} />}>الدخول للمادة</Button>
+                    <Button className="w-full" nativeButton={false} render={<Link href={`/courses/${course._id}`} />}>{t("الدخول للمادة")}</Button>
                 </CardFooter>
                 </Card>
             ))}

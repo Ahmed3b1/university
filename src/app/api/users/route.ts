@@ -3,8 +3,11 @@ import dbConnect from '@/lib/mongodb'
 import User from '@/models/User'
 import { getSession } from '@/lib/auth'
 import { hashPassword } from '@/lib/password'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET() {
+  const t = await getT()
+
   try {
         const session = await getSession()
         if (!session) {
@@ -41,7 +44,7 @@ export async function GET() {
     } catch (error) {
             console.error("Get users error:", error)
             return NextResponse.json(
-            { success: false, message: "حدث خطأ" },
+            { success: false, message: t("حدث خطأ") },
             { status: 500 }
             )
     }
@@ -49,6 +52,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
         const session = await getSession()
         if (!session) {
@@ -72,7 +77,7 @@ export async function POST(request: Request) {
         const existingUser = await User.findOne({ email: email.toLowerCase() })
         if (existingUser) {
               return NextResponse.json(
-                { success: false, message: 'البريد الإلكتروني مستخدم بالفعل' },
+                { success: false, message: t("البريد الإلكتروني مستخدم بالفعل") },
                 { status: 400 }
             )
             }
@@ -88,7 +93,7 @@ export async function POST(request: Request) {
 
             return NextResponse.json({
             success: true,
-            message: 'تم إنشاء المستخدم بنجاح',
+            message: t("تم إنشاء المستخدم بنجاح"),
             user: {
                 id: user._id.toString(),
                 email: user.email,
@@ -99,7 +104,7 @@ export async function POST(request: Request) {
         } catch (error) {
             console.error('Create user error:', error)
             return NextResponse.json(
-            { success: false, message: 'حدث خطأ' },
+            { success: false, message: t("حدث خطأ") },
             { status: 500 }
             )
         }

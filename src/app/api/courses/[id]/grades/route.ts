@@ -4,23 +4,26 @@ import Course from '@/models/Course'
 import { getSession } from '@/lib/auth'
 import { addGradeSchema } from '@/lib/validations'
 import mongoose from 'mongoose'
+import { getT } from "@/lib/i18n/server"
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const t = await getT()
+
   try {
     const session = await getSession()
     if (!session) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح' },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
 
     if (session.role === 'student') {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح بإضافة درجات' },
+        { success: false, message: t("غير مصرح بإضافة درجات") },
         { status: 403 }
       )
     }
@@ -30,7 +33,7 @@ export async function POST(
 
     const validationResult = addGradeSchema.safeParse(body)
     if (!validationResult.success) {
-      const errors = validationResult.error.issues.map((e) => e.message)
+      const errors = validationResult.error.issues.map((e) => t(e.message))
       return NextResponse.json(
         { success: false, message: errors[0] },
         { status: 400 }
@@ -45,7 +48,7 @@ export async function POST(
 
     if (!course) {
       return NextResponse.json(
-        { success: false, message: 'المادة غير موجودة' },
+        { success: false, message: t("المادة غير موجودة") },
         { status: 404 }
       )
     }
@@ -55,14 +58,14 @@ export async function POST(
 
     if (!isProfessor && !isAdmin) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح بإضافة درجات لهذه المادة' },
+        { success: false, message: t("غير مصرح بإضافة درجات لهذه المادة") },
         { status: 403 }
       )
     }
 
     if (!course.students.includes(new mongoose.Types.ObjectId(studentId))) {
       return NextResponse.json(
-        { success: false, message: 'الطالب غير مسجل في هذه المادة' },
+        { success: false, message: t("الطالب غير مسجل في هذه المادة") },
         { status: 400 }
       )
     }
@@ -88,13 +91,13 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: 'تم إضافة الدرجة بنجاح'
+      message: t("تم إضافة الدرجة بنجاح")
     })
 
     } catch (error) {
     console.error('Add material error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ' },
+      { success: false, message: t("حدث خطأ") },
       { status: 500 }
     )
   }
@@ -104,11 +107,13 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const t = await getT()
+
   try {
     const session = await getSession()
     if (!session) {
       return NextResponse.json(
-        { success: false, message: 'غير مصرح' },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
@@ -122,7 +127,7 @@ export async function GET(
 
     if (!course) {
       return NextResponse.json(
-        { success: false, message: 'المادة غير موجودة' },
+        { success: false, message: t("المادة غير موجودة") },
         { status: 404 }
       )
     }
@@ -154,7 +159,7 @@ export async function GET(
     }catch (error) {
     console.error('Add material error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ' },
+      { success: false, message: t("حدث خطأ") },
       { status: 500 }
     )
   }

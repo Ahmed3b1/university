@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useI18n } from "@/components/language-provider"
+import { getDateLocale } from "@/lib/i18n/config"
 
 interface CampusEvent {
   _id: string
@@ -20,6 +22,8 @@ interface CampusEvent {
 }
 
 export default function CampusLifePage() {
+  const { t, locale } = useI18n()
+
   const [events, setEvents] = useState<CampusEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -60,7 +64,7 @@ export default function CampusLifePage() {
       const data = await res.json()
 
       if (data.success) {
-        toast.success('تم إضافة الفعالية بنجاح')
+        toast.success(t("تم إضافة الفعالية بنجاح"))
         setIsAddOpen(false)
         fetchEvents()
         setFormData({
@@ -71,29 +75,29 @@ export default function CampusLifePage() {
           image: '',
         })
       } else {
-        toast.error(data.message || 'حدث خطأ')
+        toast.error(data.message || t("حدث خطأ"))
       }
     } catch (error) {
       console.error('Error adding event:', error)
-      toast.error('حدث خطأ أثناء الاتصال بالخادم')
+      toast.error(t("حدث خطأ أثناء الاتصال بالخادم"))
     }
 
     return (
             <div className="container mx-auto py-10 px-4" dir="rtl">
                 <div className="flex justify-between items-center mb-10">
                     <div>
-                    <h1 className="text-4xl font-bold text-primary mb-2">الحياة الجامعية</h1>
-                    <p className="text-gray-600">اكتشف الفعاليات والنشاطات في الحرم الجامعي</p>
+                    <h1 className="text-4xl font-bold text-primary mb-2">{t("الحياة الجامعية")}</h1>
+                    <p className="text-muted-foreground">{t("اكتشف الفعاليات والنشاطات في الحرم الجامعي")}</p>
                     </div>
                     <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                    <DialogTrigger render={<Button />}>إضافة فعالية</DialogTrigger>
+                    <DialogTrigger render={<Button />}>{t("إضافة فعالية")}</DialogTrigger>
                     <DialogContent className="max-w-md bg-background text-foreground" dir="rtl">
                             <DialogHeader>
-                            <DialogTitle>إضافة فعالية جديدة</DialogTitle>
+                            <DialogTitle>{t("إضافة فعالية جديدة")}</DialogTitle>
                             </DialogHeader>
                             <form onSubmit={handleAddEvent} className="space-y-4 mt-4">
                             <div className="space-y-2">
-                                <Label>عنوان الفعالية</Label>
+                                <Label>{t("عنوان الفعالية")}</Label>
                                 <Input
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -102,7 +106,7 @@ export default function CampusLifePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>وصف الفعالية</Label>
+                                <Label>{t("وصف الفعالية")}</Label>
                                 <Textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -111,7 +115,7 @@ export default function CampusLifePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>التاريخ والوقت</Label>
+                                <Label>{t("التاريخ والوقت")}</Label>
                                 <Input
                                 type="datetime-local"
                                 value={formData.date}
@@ -120,7 +124,7 @@ export default function CampusLifePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>المكان</Label>
+                                <Label>{t("المكان")}</Label>
                                 <Input
                                 value={formData.location}
                                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
@@ -128,14 +132,14 @@ export default function CampusLifePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>رابط الصورة (اختياري)</Label>
+                                <Label>{t("رابط الصورة (اختياري)")}</Label>
                                 <Input
                                 value={formData.image}
                                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                                 placeholder="https://..."
                                 />
                             </div>
-                            <Button type="submit" className="w-full">إضافة</Button>
+                            <Button type="submit" className="w-full">{t("إضافة")}</Button>
                             </form>
                         </DialogContent>
                     </Dialog>
@@ -148,23 +152,23 @@ export default function CampusLifePage() {
                 ))}
                 </div>
                 ) : events.length === 0 ? (
-                    <div className="text-center py-20 bg-gray-50 rounded-lg border border-dashed text-gray-500">
-                    <p>لا توجد فعاليات قادمة حالياً</p>
+                    <div className="text-center py-20 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">
+                    <p>{t("لا توجد فعاليات قادمة حالياً")}</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events.map((event) => (
                         <Card key={event._id} className="hover:shadow-lg transition-shadow overflow-hidden">
-                        <div className="relative h-48 bg-gray-100">
+                        <div className="relative h-48 bg-muted">
                             {event.image ? (
                             <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
                             ) : (
-                            <div className="flex items-center justify-center h-full text-gray-400">
-                                <span>لا توجد صورة</span>
+                            <div className="flex items-center justify-center h-full text-muted-foreground/70">
+                                <span>{t("لا توجد صورة")}</span>
                             </div>
                             )}
-                            <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-primary">
-                            {new Date(event.date).toLocaleDateString('ar-SA')}
+                            <div className="absolute top-2 start-2 bg-background/80 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-primary">
+                            {new Date(event.date).toLocaleDateString(getDateLocale(locale))}
                             </div>
                         </div>
                         <CardHeader>
@@ -174,12 +178,12 @@ export default function CampusLifePage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 line-clamp-3 text-sm">
+                            <p className="text-muted-foreground line-clamp-3 text-sm">
                             {event.description}
                             </p>
                         </CardContent>
                         <CardFooter>
-                            <Button variant="outline" className="w-full">التفاصيل</Button>
+                            <Button variant="outline" className="w-full">{t("التفاصيل")}</Button>
                         </CardFooter>
                         </Card>
                     ))}

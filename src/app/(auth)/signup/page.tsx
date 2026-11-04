@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signupSchema, SignupInput } from "@/lib/validations"
+import { useI18n } from "@/components/language-provider"
 
 const roles = [
   { value: "student", label: "طالب" },
@@ -21,6 +22,8 @@ const roles = [
 ]
 
 export default function SignupPage() {
+  const { t } = useI18n()
+
   const router = useRouter()
   const [showPassword, setShowPassword] = React.useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = React.useState(true)
@@ -71,10 +74,10 @@ export default function SignupPage() {
         return
       }
 
-      toast.success("تم إنشاء الحساب بنجاح")
+      toast.success(t("تم إنشاء الحساب بنجاح"))
       router.push(`/dashboard/${result.user.role}`)
     } catch {
-      toast.error("حدث خطأ غير متوقع")
+      toast.error(t("حدث خطأ غير متوقع"))
     }
   }
 
@@ -97,12 +100,12 @@ export default function SignupPage() {
         <Card className="glass-card border-primary/10">
           <CardHeader className="text-center space-y-4">
             <div className="mx-auto bg-primary p-3 rounded-xl w-fit">
-              <GraduationCap className="h-8 w-8 text-white" />
+              <GraduationCap className="h-8 w-8 text-primary-foreground" />
             </div>
             <div>
-              <CardTitle className="text-2xl">إنشاء حساب جديد</CardTitle>
+              <CardTitle className="text-2xl">{t("إنشاء حساب جديد")}</CardTitle>
               <CardDescription className="mt-2">
-                أنشئ حسابك للوصول إلى نظام إدارة الجامعة
+                {t("أنشئ حسابك للوصول إلى نظام إدارة الجامعة")}
               </CardDescription>
             </div>
           </CardHeader>
@@ -110,17 +113,17 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             <div className="space-y-2">
                 <label htmlFor="name" className="text-sm font-medium">
-                  الاسم الكامل
+                  {t("الاسم الكامل")}
                 </label>
 
                 <div className="relative">
-                  <User className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <User className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     id="name"
                     type="text"
-                    placeholder="أحمد محمد"
+                    placeholder={t("أحمد محمد")}
                     className={cn(
-                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background",
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 text-sm ring-offset-background",
                       "placeholder:text-muted-foreground",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       "disabled:cursor-not-allowed disabled:opacity-50",
@@ -133,24 +136,24 @@ export default function SignupPage() {
                 </div>
                 {errors.name && (
                   <p className="text-xs text-destructive">
-                    {errors.name.message}
+                    {t(errors.name.message ?? "")}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
-                  البريد الإلكتروني
+                  {t("البريد الإلكتروني")}
                 </label>
 
                 <div className="relative">
-                  <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     className={cn(
-                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background",
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 text-sm ring-offset-background",
                       "placeholder:text-muted-foreground",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       "disabled:cursor-not-allowed disabled:opacity-50",
@@ -164,24 +167,24 @@ export default function SignupPage() {
                 </div>
                 {errors.email && (
                   <p className="text-xs text-destructive">
-                    {errors.email.message}
+                    {t(errors.email.message ?? "")}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium">
-                  كلمة المرور
+                  {t("كلمة المرور")}
                 </label>
 
                 <div className="relative">
-                  <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="********"
                     className={cn(
-                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 pl-10 text-sm",
+                      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ps-10 pe-10 text-sm",
                       "ring-offset-background placeholder:text-muted-foreground",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       "disabled:cursor-not-allowed disabled:opacity-50",
@@ -195,7 +198,7 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -206,18 +209,18 @@ export default function SignupPage() {
                 </div>
 
                 <p className="text-xs text-muted-foreground">
-                  8 أحرف على الأقل، حرف كبير واحد، ورقم واحد
+                  {t("8 أحرف على الأقل، حرف كبير واحد، ورقم واحد")}
                 </p>
                 {errors.password && (
                   <p className="text-xs text-destructive">
-                    {errors.password.message}
+                    {t(errors.password.message ?? "")}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="role" className="text-sm font-medium">
-                  نوع الحساب
+                  {t("نوع الحساب")}
                 </label>
                 <select
                   id="role"
@@ -231,13 +234,13 @@ export default function SignupPage() {
                 >
                   {roles.map((role) => (
                     <option key={role.value} value={role.value}>
-                      {role.label}
+                      {t(role.label)}
                     </option>
                   ))}
                 </select>
                 {errors.role && (
                   <p className="text-xs text-destructive">
-                    {errors.role.message}
+                    {t(errors.role.message ?? "")}
                   </p>
                 )}
               </div>
@@ -245,21 +248,21 @@ export default function SignupPage() {
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                    جاري إنشاء الحساب...
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                    {t("جاري إنشاء الحساب...")}
                   </>
                 ) : (
-                  "إنشاء الحساب"
+                  t("إنشاء الحساب")
                 )}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
-                لديك حساب بالفعل؟{" "}
+                {t("لديك حساب بالفعل؟")}{" "}
                 <Link
                   href="/login"
                   className="text-primary hover:underline font-medium"
                 >
-                  تسجيل الدخول
+                  {t("تسجيل الدخول")}
                 </Link>
               </p>
             </form>

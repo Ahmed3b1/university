@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Course from '@/models/Course'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET(
   request: Request,
   {params}: {params: Promise<{id:string}>}
 ){
+  const t = await getT()
+
   try {
     const { id } = await params
     await dbConnect()
@@ -17,7 +20,7 @@ export async function GET(
 
     if(!course){
       return NextResponse.json(
-        {success:false, message:"لم يتم العثور على الدورة"},
+        {success:false, message:t("لم يتم العثور على الدورة")},
         {status:404}
       )
     }
@@ -33,7 +36,7 @@ export async function GET(
   } catch (error) {
     console.error('Get course details error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ' },
+      { success: false, message: t("حدث خطأ") },
       { status: 500 }
     )
   }

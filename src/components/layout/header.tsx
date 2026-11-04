@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/breadcrumb"
 
 import {useEffect , useState} from "react";
+import { useI18n } from "@/components/language-provider"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 
 const components: { title: string; href: string; description: string }[] = [
@@ -78,6 +80,8 @@ interface HeaderUser {
 }
 
 export function Header(){
+  const { t, dir } = useI18n()
+
     const {setTheme , theme} = useTheme()
     const pathname = usePathname()
     const router = useRouter()
@@ -114,16 +118,13 @@ export function Header(){
                 <div className="flex items-center justify-between h-14">
 
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 ml-8">
+                    <Link href="/" className="flex items-center gap-2 me-8">
                         <div className="bg-primary p-1.5 rounded-lg">
-                            <GraduationCap className="h-6 w-6 text-white" />
+                            <GraduationCap className="h-6 w-6 text-primary-foreground" />
 
                         </div>
-                        <span className="text-3xl font-bold bg-clip-text text-transparent
-                         bg-linear-to-l from-indigo-500 to-purple-600
-                         dark:from-indigo-400 dark:to-purple-400">
-                            EduCore
-
+                        <span className="text-3xl font-bold tracking-tight">
+                            Edu<span className="text-primary">Lrn</span>
                         </span>
                     </Link>
 
@@ -133,41 +134,41 @@ export function Header(){
                         <NavigationMenu>
                             <NavigationMenuList>
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger>الأكاديمية</NavigationMenuTrigger>
+                                    <NavigationMenuTrigger>{t("الأكاديمية")}</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid gap-3 p-6 md:w-100 lg:w-125 lg:grid-cols-[1fr_.75fr]">
                                             <li className="row-span-3">
                                                 <NavigationMenuLink>
                                                     <a
-                                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-indigo-500 to-purple-600 p-6 no-underline outline-none focus:shadow-md"
+                                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-card to-secondary border border-primary/30 p-6 no-underline outline-none focus:shadow-md"
                                                         href="/"
                                                     >
-                                                        <Book className="h-6 w-6 text-white" />
-                                                        <div className="mb-2 mt-4 text-lg font-medium text-white">
-                                                            التميز الأكاديمي
+                                                        <Book className="h-6 w-6 text-primary" />
+                                                        <div className="mb-2 mt-4 text-lg font-medium text-foreground">
+                                                            {t("التميز الأكاديمي")}
                                                         </div>
-                                                        <p className="text-sm leading-tight text-white/90">
-                                                            اكتشف برامجنا العالمية المصممة لقادة المستقبل.
+                                                        <p className="text-sm leading-tight text-muted-foreground">
+                                                            {t("اكتشف برامجنا العالمية المصممة لقادة المستقبل.")}
                                                         </p>
                                                     </a>
                                                 </NavigationMenuLink>
                                             </li>
 
-                                            <ListItem href="/courses" title="برامج البكالوريوس">
-                                                شهادات في العلوم والهندسة والآداب.
+                                            <ListItem href="/courses" title={t("برامج البكالوريوس")}>
+                                                {t("شهادات في العلوم والهندسة والآداب.")}
                                             </ListItem>
-                                            <ListItem href="/graduate" title="الدراسات العليا">
-                                                برامج الماجستير والدكتوراه.
+                                            <ListItem href="/graduate" title={t("الدراسات العليا")}>
+                                                {t("برامج الماجستير والدكتوراه.")}
                                             </ListItem>
-                                            <ListItem href="/online" title="التعلم عن بعد">
-                                                خيارات مرنة للمهنيين.
+                                            <ListItem href="/online" title={t("التعلم عن بعد")}>
+                                                {t("خيارات مرنة للمهنيين.")}
                                             </ListItem>
                                         </ul>
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
 
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger>لوحات التحكم</NavigationMenuTrigger>
+                                    <NavigationMenuTrigger>{t("لوحات التحكم")}</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-100 gap-3 p-4 md:w-125 md:grid-cols-2 lg:w-150">
                                             {components
@@ -183,10 +184,10 @@ export function Header(){
                                             .map((component) => (
                                                 <ListItem
                                                     key={component.title}
-                                                    title={component.title}
+                                                    title={t(component.title)}
                                                     href={component.href}
                                                 >
-                                                    {component.description}
+                                                    {t(component.description)}
                                                 </ListItem>
                                             ))}
                                         </ul>
@@ -195,7 +196,7 @@ export function Header(){
 
                                 <NavigationMenuItem>
                                     <NavigationMenuLink href="/campus" className={navigationMenuTriggerStyle()}>
-                                        الحياة الجامعية
+                                        {t("الحياة الجامعية")}
                                     </NavigationMenuLink>
                                 </NavigationMenuItem>
 
@@ -204,6 +205,7 @@ export function Header(){
                     </div>
 
                     <div className="hidden md:flex items-center gap-4">
+                        <LanguageSwitcher />
                         <Button variant="ghost" size="icon" className="rounded-full"
                             onClick={()=> setTheme(theme === "dark" ? "light" : "dark")}>
                             <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100
@@ -211,7 +213,7 @@ export function Header(){
                             <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90
                             scale-0 transition-all dark:rotate-0 dark:scale-100" />
 
-                            <span className="sr-only">تبديل الوضع</span>
+                            <span className="sr-only">{t("تبديل الوضع")}</span>
 
                         </Button>
 
@@ -220,7 +222,7 @@ export function Header(){
                                 <Link href="/notifications">
                                     <Button variant="ghost" size="icon" className="rounded-full relative">
                                         <Bell className="h-5 w-5" />
-                                        <span className="absolute top-1 left-1 h-2 w-2 bg-red-500 rounded-full"/>
+                                        <span className="absolute top-1 end-1 h-2 w-2 bg-primary rounded-full"/>
                                     </Button>
 
                                 </Link>
@@ -235,8 +237,8 @@ export function Header(){
 
                                 <Button variant="ghost" size="sm" onClick={handleLogout}
                                 className="text-destructive hover:text-destructive">
-                                    <LogOut className="h-4 w-4 ml-2" />
-                                    خروج
+                                    <LogOut className="h-4 w-4 me-2" />
+                                    {t("خروج")}
 
                                 </Button>
 
@@ -244,7 +246,7 @@ export function Header(){
                         ) : (
                             <Link href="/login">
                                 <Button variant="secondary" size="sm" className="rounded-full px-6">
-                                    تسجيل الدخول
+                                    {t("تسجيل الدخول")}
 
                                 </Button>
 
@@ -255,6 +257,7 @@ export function Header(){
                     {/* Mobile Toggle */}
 
                     <div className="md:hidden flex items-center gap-4">
+                        <LanguageSwitcher />
                         <Button variant="ghost" size="icon"
                         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
                             <Sun className="h-5 w-5 rotate-0 scale-100 transition-all
@@ -267,14 +270,14 @@ export function Header(){
                         <Sheet>
                             <SheetTrigger render={<Button variant="ghost" size="icon" />}>
                                 <Menu className="h-5 w-5" />
-                                <span className="sr-only">Toggle menu</span>
+                                <span className="sr-only">{t("تبديل القائمة")}</span>
                             </SheetTrigger>
 
-                            <SheetContent side="left" className="w-75 sm:w-100">
+                            <SheetContent side={dir === "rtl" ? "left" : "right"} className="w-75 sm:w-100">
                                 <SheetHeader>
-                                    <SheetTitle className="text-right flex items-center gap-2">
+                                    <SheetTitle className="text-start flex items-center gap-2">
                                         <GraduationCap className="h-6 w-6 text-primary" />
-                                        قائمة EduCore
+                                        {t("قائمة EduLrn")}
 
                                     </SheetTitle>
                                 </SheetHeader>
@@ -297,7 +300,7 @@ export function Header(){
                                     )}
 
                                     <div className="grid gap-2">
-                                        <h3 className="text-sm font-medium text-muted-foreground mb-2">لوحات التحكم</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-2">{t("لوحات التحكم")}</h3>
 
                                         {components
                                             .filter((component) => {
@@ -312,31 +315,31 @@ export function Header(){
                                             .map((component) => (
                                                 <ListItem
                                                     key={component.title}
-                                                    title={component.title}
+                                                    title={t(component.title)}
                                                     href={component.href}
                                                 >
-                                                    {component.description}
+                                                    {t(component.description)}
                                                 </ListItem>
                                             ))}
 
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <h3 className="text-sm font-medium text-muted-foreground mb-2">الحساب</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-2">{t("الحساب")}</h3>
 
                                         {user ? (
                                             <>
                                                 <Link href="/settings" className="flex items-center gap-2 text-lg
                                                 font-medium hover:text-primary transition-colors">
                                                     <Settings className="w-4 h-4" />
-                                                    الإعدادات
+                                                    {t("الإعدادات")}
                                                 </Link>
 
                                                 <button onClick={handleLogout} className="flex
                                                     items-center gap-2 text-lg font-medium
                                                     text-destructive hover:opacity-80 transition-colors">
                                                     <LogOut className="h-4 w-4" />
-                                                    تسجيل الخروج
+                                                    {t("تسجيل الخروج")}
                                                 </button>
 
                                             </>
@@ -344,7 +347,7 @@ export function Header(){
                                             <Link href="/login" className="flex items-center gap-2 text-lg
                                             font-medium hover:text-primary transition-colors">
                                                 <User className="h-4 w-4" />
-                                                تسجيل الدخول
+                                                {t("تسجيل الدخول")}
                                             </Link>
                                         )}
 
@@ -364,7 +367,7 @@ export function Header(){
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/">الرئيسية</BreadcrumbLink>
+                                    <BreadcrumbLink href="/">{t("الرئيسية")}</BreadcrumbLink>
 
                                 </BreadcrumbItem>
 
@@ -372,7 +375,7 @@ export function Header(){
                                     const href = `/${paths.slice(0, index + 1).join("/")}`;
                                     const isLast = index === paths.length - 1;
                                     const title =
-                                        arabicPaths[path] ||
+                                        (arabicPaths[path] ? t(arabicPaths[path]) : undefined) ||
                                         path.charAt(0).toUpperCase() + path.slice(1);
 
                                     return (

@@ -3,8 +3,11 @@ import { getSession } from '@/lib/auth'
 import dbConnect from '@/lib/mongodb'
 import User from '@/models/User'
 import { hashPassword } from '@/lib/password'
+import { getT } from "@/lib/i18n/server"
 
 export async function PUT(request: Request) {
+  const t = await getT()
+
   try {
     const session = await getSession()
 
@@ -20,7 +23,7 @@ export async function PUT(request: Request) {
         if (email) {
         const existingUser = await User.findOne({ email, _id: { $ne: session.userId } })
         if (existingUser) {
-            return NextResponse.json({ error: 'البريد الإلكتروني مستخدم بالفعل' }, { status: 400 })
+            return NextResponse.json({ error: t("البريد الإلكتروني مستخدم بالفعل") }, { status: 400 })
         }
         }
 
@@ -34,12 +37,12 @@ export async function PUT(request: Request) {
         const user = await User.findByIdAndUpdate(session.userId, updateData, { new: true }).select('-password')
 
         if (!user) {
-        return NextResponse.json({ error: 'المستخدم غير موجود' }, { status: 404 })
+        return NextResponse.json({ error: t("المستخدم غير موجود") }, { status: 404 })
         }
 
         return NextResponse.json(user)
     } catch (error) {
         console.error('Profile update error:', error)
-        return NextResponse.json({ error: 'حدث خطأ أثناء تحديث البيانات' }, { status: 500 })
+        return NextResponse.json({ error: t("حدث خطأ أثناء تحديث البيانات") }, { status: 500 })
     }
 }

@@ -4,8 +4,11 @@ import User from '@/models/User'
 import { signToken, setAuthCookie } from '@/lib/auth'
 import { hashPassword } from '@/lib/password'
 import { signupSchema } from '@/lib/validations'
+import { getT } from "@/lib/i18n/server"
 
 export async function POST(request: Request) {
+  const t = await getT()
+
   try {
     await dbConnect()
 
@@ -13,7 +16,7 @@ export async function POST(request: Request) {
 
     const validationResult = signupSchema.safeParse(body)
     if (!validationResult.success) {
-      const errors = validationResult.error.issues.map((e) => e.message)
+      const errors = validationResult.error.issues.map((e) => t(e.message))
       return NextResponse.json(
         { success: false, message: errors[0] },
         { status: 400 }
@@ -25,7 +28,7 @@ export async function POST(request: Request) {
     const existingUser = await User.findOne({ email: email.toLowerCase() })
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'البريد الإلكتروني مستخدم بالفعل' },
+        { success: false, message: t("البريد الإلكتروني مستخدم بالفعل") },
         { status: 400 }
       )
     }
@@ -51,7 +54,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'تم إنشاء الحساب بنجاح',
+      message: t("تم إنشاء الحساب بنجاح"),
       user: {
         id: user._id.toString(),
         email: user.email,
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Signup error:', error)
     return NextResponse.json(
-      { success: false, message: 'حدث خطأ أثناء إنشاء الحساب' },
+      { success: false, message: t("حدث خطأ أثناء إنشاء الحساب") },
       { status: 500 }
     )
   }

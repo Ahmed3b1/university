@@ -2,16 +2,19 @@ import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import User from '@/models/User'
 import { getSession } from '@/lib/auth'
+import { getT } from "@/lib/i18n/server"
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
     ) {
+  const t = await getT()
+
         try {
                 const session = await getSession()
                 if (!session) {
                 return NextResponse.json(
-                    { success: false, message: "غير مصرح" },
+                    { success: false, message: t("غير مصرح") },
                     { status: 401 }
                 )
                 }
@@ -20,7 +23,7 @@ export async function GET(
 
                 if (session.userId !== id && session.role !== "admin") {
                 return NextResponse.json(
-                    { success: false, message: "غير مصرح بالدخول" },
+                    { success: false, message: t("غير مصرح بالدخول") },
                     { status: 403 }
                 )
                 }
@@ -29,7 +32,7 @@ export async function GET(
                     const user = await User.findById(id).select("-password").lean()
                     if (!user) {
                     return NextResponse.json(
-                        { success: false, message: "المستخدم غير موجود" },
+                        { success: false, message: t("المستخدم غير موجود") },
                         { status: 404 }
                     )
                     }
@@ -46,7 +49,7 @@ export async function GET(
                     })
                 } catch (err) {
                     return NextResponse.json(
-                    { success: false, message: "حدث خطأ أثناء جلب بيانات المستخدم" },
+                    { success: false, message: t("حدث خطأ أثناء جلب بيانات المستخدم") },
                     { status: 500 }
                     )
                 }
@@ -57,11 +60,13 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const t = await getT()
+
   try {
         const session = await getSession()
         if (!session) {
         return NextResponse.json(
-            { success: false, message: "غير مصرح" },
+            { success: false, message: t("غير مصرح") },
             { status: 401 }
         )
         }
@@ -69,7 +74,7 @@ export async function PUT(
         const { id } = await params
         if (session.userId !== id && session.role !== "admin") {
         return NextResponse.json(
-            { success: false, message: "غير مصرح بالدخول" },
+            { success: false, message: t("غير مصرح بالدخول") },
             { status: 403 }
         )
         }
@@ -88,14 +93,14 @@ export async function PUT(
 
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "المستخدم غير موجود" },
+                { success: false, message: t("المستخدم غير موجود") },
                 { status: 404 }
             )
         }
 
         return NextResponse.json({
             success: true,
-            message: "تم تحديث بيانات المستخدم بنجاح",
+            message: t("تم تحديث بيانات المستخدم بنجاح"),
             user: {
                 id: user._id.toString(),
                 email: user.email,
@@ -105,7 +110,7 @@ export async function PUT(
         })
     } catch (error) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ" },
+            { success: false, message: t("حدث خطأ") },
             { status: 500 }
         )
     }
@@ -115,18 +120,20 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const t = await getT()
+
   try {
     const session = await getSession()
     if (!session) {
       return NextResponse.json(
-        { success: false, message: "غير مصرح" },
+        { success: false, message: t("غير مصرح") },
         { status: 401 }
       )
     }
 
     if (session.role !== "admin") {
       return NextResponse.json(
-        { success: false, message: "غير مصرح" },
+        { success: false, message: t("غير مصرح") },
         { status: 403 }
       )
     }
@@ -135,7 +142,7 @@ export async function DELETE(
 
     if (session.userId === id) {
       return NextResponse.json(
-        { success: false, message: "غير مصرح بالحذف" },
+        { success: false, message: t("غير مصرح بالحذف") },
         { status: 400 }
       )
     }
@@ -146,19 +153,19 @@ export async function DELETE(
 
         if (!user) {
       return NextResponse.json(
-        { success: false, message: 'المستخدم غير موجود' },
+        { success: false, message: t("المستخدم غير موجود") },
         { status: 404 }
       )
     }
 
     return NextResponse.json({
         success: true,
-        message: 'تم حذف المستخدم بنجاح',
+        message: t("تم حذف المستخدم بنجاح"),
         })
     } catch (error) {
         console.error('Delete user error:', error)
         return NextResponse.json(
-        { success: false, message: 'حدث خطأ' },
+        { success: false, message: t("حدث خطأ") },
         { status: 500 }
         )
     }
