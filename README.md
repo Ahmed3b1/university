@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EduLrn - University Management System
 
-## Getting Started
+A full-stack university management platform built with **Next.js 16 (App Router)**, **TypeScript**, **MongoDB (Mongoose)** and **Tailwind CSS 4**.
+Three role-based dashboards (admin, professor, student), course enrollment, learning materials, grades, notifications,
+graduate programs, online courses and campus events. Ships with **Arabic (RTL)** and **English (LTR)**, and a dark / light theme.
 
-First, run the development server:
+> Full documentation: open **`documentation/index.html`** in your browser.
+
+## Quick start
+
+**Requirements:** Node.js 20.9 or newer, npm, and a MongoDB database
+(the free [MongoDB Atlas](https://www.mongodb.com/atlas) tier is enough).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. install dependencies
+npm install
+
+# 2. create your environment file and fill in the two values
+cp .env.example .env.local        # Windows: copy .env.example .env.local
+
+# 3. create the first administrator
+npm run create-admin
+
+# 4. start the app
+npm run dev                        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000/login` and sign in with the admin you just created.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Name | Required | Description |
+|---|---|---|
+| `MONGODB_URI` | yes | MongoDB connection string, including the database name |
+| `JWT_SECRET` | yes | Random string (32+ characters) used to sign login tokens |
 
-## Learn More
+## Useful commands
 
-To learn more about Next.js, take a look at the following resources:
+| Command | What it does |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm start` | Run the production build |
+| `npm run create-admin` | Create an administrator, or promote an existing user to admin |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Where to change things
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| I want to... | File |
+|---|---|
+| Change colors | `src/app/globals.css` |
+| Add or edit English text | `src/lib/i18n/en.ts` |
+| Change the default language | `src/lib/i18n/config.ts` |
+| Change the logo / site name | `src/components/layout/header.tsx` |
 
-## Deploy on Vercel
+## Deploying
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The project deploys to **Vercel** with no extra configuration. Add `MONGODB_URI` and `JWT_SECRET` under
+*Project Settings > Environment Variables*, allow Vercel in MongoDB Atlas (*Network Access > Allow access from anywhere*),
+then redeploy. Details are in the documentation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+Sold under the Envato Market license. See the item page on CodeCanyon for the Regular and Extended license terms.
+Third-party libraries keep their own licenses (listed in the documentation).
