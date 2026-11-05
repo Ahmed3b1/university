@@ -18,7 +18,7 @@ import { useI18n } from "@/components/language-provider"
 const roles = [
   { value: "student", label: "طالب" },
   { value: "professor", label: "أستاذ" },
-  { value: "admin", label: "مدير" },
+  // { value: "admin", label: "مدير" },
 ]
 
 export default function SignupPage() {

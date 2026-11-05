@@ -14,7 +14,7 @@ export const signupSchema = z.object({
     .string()
     .min(2, 'الاسم يجب أن يكون حرفين على الأقل')
     .max(50, 'الاسم طويل جداً'),
-  role: z.enum(['admin', 'professor', 'student'], {
+  role: z.enum(['professor', 'student'], {
     message: 'يرجى اختيار دور صحيح',
   }),
 })
